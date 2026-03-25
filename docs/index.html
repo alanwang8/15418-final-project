@@ -72,7 +72,7 @@
     <section class="hero teaser project-teaser">
       <div class="container is-max-desktop">
         <div class="hero-body">
-          <h2 class="subtitle is-4 has-text-centered">
+          <h2 class="subtitle is-4 has-text-centered" style="margin-bottom: 0">
             <span class="dnerf">Thermo-elastic</span> coupling on a chip-scale mesh—parallel heat diffusion,
             deformation, and scaling on multi-core CPUs.
           </h2>
@@ -120,6 +120,17 @@
           <div class="column is-four-fifths">
             <h2 class="title is-3">Background</h2>
             <div class="content has-text-justified">
+              <figure class="floorplan-figure">
+                <img
+                  src="assets/processor-floor-plan.png"
+                  alt="Labeled processor floor plan: four Core blocks, central Queue, Shared L3 Cache along the bottom, Memory Controller at the top, Misc IO on the left edge, and PCIe on the right."
+                />
+                <figcaption>
+                  Example multi-core die layout (annotated floor plan). Functional blocks like cores, shared L3, memory
+                  controllers, and I/O sit adjacent with different power densities—exactly the kind of heterogeneous
+                  layout we coarsen into mesh cells for thermal and deformation simulation.
+                </figcaption>
+              </figure>
               <p>
                 Our project focuses on simulating how heat spreads and causes stress in a processor chip, taking
                 inspiration from materials like shape-memory alloys (SMAs) that deform predictably with temperature.
@@ -214,7 +225,26 @@
             <div class="column is-four-fifths">
               <h2 class="title is-3">Goals and deliverables</h2>
               <div class="content has-text-justified">
-                <h3 class="title is-5">Plan to achieve (must complete)</h3>
+                <p>
+                  <strong>Systems project — what the simulator will be capable of:</strong> A shared-memory C++
+                  program that steps a 2D mesh representing a simplified processor floorplan forward in time: each
+                  timestep applies explicit finite-difference–style thermal diffusion, then updates cell geometry and
+                  neighbor conductances to capture thermo-elastic feedback. The implementation will expose tunable
+                  material/power maps, thread count, and scheduling so we can measure parallel behavior on real lab
+                  machines.
+                </p>
+                <p>
+                  <strong>Hoped performance (systems):</strong> We aim to demonstrate clear multi-core speedups and to
+                  quantify how much coupling and mesh dynamics cost relative to a static baseline. Specific numeric
+                  targets and justification appear under <em>Plan to achieve</em> below; stretch targets under
+                  <em>Hope to achieve</em>.
+                </p>
+
+                <h3 class="title is-5">PLAN TO ACHIEVE</h3>
+                <p>
+                  The following items are what we believe we <strong>must</strong> complete for a successful project
+                  and the grade we expect. They are ordered from simulation core through evaluation.
+                </p>
 
                 <h4 class="title is-6">1. 2D mesh simulator</h4>
                 <p><strong>Cell characteristics:</strong></p>
@@ -344,7 +374,44 @@
                   </li>
                 </ul>
 
-                <h3 class="title is-5" style="margin-top: 2rem">Hope to achieve (if ahead of schedule)</h3>
+                <h4 class="title is-6" style="margin-top: 1.5rem">Target outcomes and justification (plan)</h4>
+                <p>
+                  We may not know final numbers until implementation lands, but we commit to <strong>concrete,
+                  measurable</strong> goals and explain why they are realistic:
+                </p>
+                <ul>
+                  <li>
+                    <strong>Multi-core speedup:</strong> Show at least roughly <strong>4×</strong> wall-clock speedup on
+                    <strong>8 threads</strong> vs 1 thread for the full coupled timestep (thermal update + geometry
+                    update + conductance refresh) on a mesh of at least <strong>256×256</strong> cells for a
+                    uniform-power baseline on GHC or PSC. <em>Justification:</em> Per-timestep cell updates are
+                    embarrassingly parallel with only barriers between phases; we expect synchronization—not neighbor
+                    arithmetic—to cap scaling first, which we will measure explicitly.
+                  </li>
+                  <li>
+                    <strong>Scaling curve:</strong> Report speedup (or time-to-solution) for thread counts in
+                    <strong>{1, 2, 4, 8}</strong> (and higher when hardware allows), with fixed total timesteps and mesh
+                    size stated in the writeup.
+                  </li>
+                  <li>
+                    <strong>Cost of dynamics:</strong> Quantify the slowdown versus a <strong>static-mesh</strong> run
+                    at the same resolution and thread count (deformation/conductance updates disabled or fixed).
+                    <em>Justification:</em> Same codebase path toggled via a flag keeps the comparison fair and
+                    isolates thermo-elastic overhead.
+                  </li>
+                  <li>
+                    <strong>Load imbalance signal:</strong> For at least one hotspot-style power map, report per-thread
+                    timing or work proxies so we can discuss whether static partitioning leaves cores idle.
+                    <em>Justification:</em> Hotspots are inherent to the workload; documenting imbalance supports claims
+                    about scheduling choices.
+                  </li>
+                </ul>
+
+                <h3 class="title is-5" style="margin-top: 2rem">HOPE TO ACHIEVE (if ahead of schedule)</h3>
+                <p>
+                  Extra goals if the project goes well and we get ahead of schedule. Each includes why it might be
+                  reachable.
+                </p>
                 <h4 class="title is-6">1. Interactive / live simulation</h4>
                 <ul>
                   <li>
@@ -353,6 +420,11 @@
                   </li>
                   <li>Provide a live visualization of the mesh deforming or the heat flow changing over time.</li>
                 </ul>
+                <p>
+                  <em>Why it might be achievable:</em> If the core timestep is already fast on moderate meshes, throttling
+                  visualization resolution and timestep count can keep an interactive loop within tens of milliseconds per
+                  frame on lab CPUs.
+                </p>
                 <h4 class="title is-6">2. Customizable inputs &amp; scenarios</h4>
                 <ul>
                   <li>
@@ -365,6 +437,10 @@
                   </li>
                   <li>Include dynamic load injection to test extreme or non-uniform scenarios.</li>
                 </ul>
+                <p>
+                  <em>Why it might be achievable:</em> A simple file- or stdin-driven power trace and a small set of CLI
+                  flags reuse the same engine without rewriting the hot loop.
+                </p>
                 <h4 class="title is-6">3. Flexible mesh / floorplan import</h4>
                 <ul>
                   <li>
@@ -372,6 +448,10 @@
                   </li>
                   <li>Map imported floorplans to the mesh, assigning thermal properties to each block automatically.</li>
                 </ul>
+                <p>
+                  <em>Why it might be achievable:</em> Parsing a coarse JSON/CSV block list into rectilinear regions is
+                  orthogonal to the timestep kernel and can follow once the mesh data structure stabilizes.
+                </p>
                 <h4 class="title is-6">4. Enhanced visualization &amp; output</h4>
                 <ul>
                   <li>Generate animated heatmaps or videos showing thermal propagation and mesh deformation over time.</li>
@@ -379,20 +459,74 @@
                     Produce performance dashboards combining heatmaps, strain, and thread utilization for parallel runs.
                   </li>
                 </ul>
-
-                <h3 class="title is-5" style="margin-top: 2rem">If we fall behind</h3>
                 <p>
-                  We will prioritize a working core: static (or minimally dynamic) mesh, basic thermal diffusion, a
-                  simple deformation model, and multi-threaded speedup experiments. Full unstructured topology updates,
-                  advanced scheduling studies, or optional GPU work can be deferred to protect the milestone and final
-                  evaluation.
+                  <em>Why it might be achievable:</em> Dumping per-step PNGs or CSVs from existing fields is mostly I/O
+                  plumbing once the simulation produces stable outputs.
+                </p>
+                <p>
+                  <strong>Stretch performance target (hope):</strong> If tuning succeeds, we would like to approach
+                  roughly <strong>~6–8×</strong> speedup at 8 threads on the same baseline mesh as in our plan—beyond
+                  the planned 4× floor—because reducing barrier overhead or improving SoA layout could recover a
+                  meaningful fraction of serial time. We will only claim this if measurements support it.
                 </p>
 
-                <h3 class="title is-5" style="margin-top: 1rem">Optional poster demo</h3>
+                <h3 class="title is-5" style="margin-top: 2rem">If work goes more slowly (contingency)</h3>
                 <p>
-                  If time and stability allow, we may show a short live or recorded demo of the simulator (heatmap
-                  and/or mesh deformation) alongside our performance graphs at the poster session. A demo is optional;
-                  the main emphasis remains experimental evaluation and scaling analysis.
+                  If we fall behind, we will <strong>shrink scope in a defined order</strong> so we still ship a
+                  defensible parallel study:
+                </p>
+                <ul>
+                  <li>
+                    <strong>First cut:</strong> Keep a <strong>structured grid</strong> only (no unstructured adjacency
+                    rebuilds); deformation only adjusts distances/conductances, not topology.
+                  </li>
+                  <li>
+                    <strong>Second cut:</strong> Defer <strong>dynamic scheduling</strong> and advanced load-balancing
+                    experiments; stick to static block partitioning with clear speedup plots.
+                  </li>
+                  <li>
+                    <strong>Third cut:</strong> Reduce mesh ambition to <strong>128×128</strong> (or similar) for
+                    scaling studies while preserving the static-vs-dynamic overhead comparison on that size.
+                  </li>
+                  <li>
+                    <strong>Last resort:</strong> Deliver a correct <strong>single-threaded</strong> coupled simulator
+                    plus a parallel <strong>thermal-only</strong> path if coupling parallelization slips—but we will
+                    document the gap explicitly in the milestone/final writeup.
+                  </li>
+                </ul>
+
+                <h3 class="title is-5" style="margin-top: 2rem">Experimental analysis — questions we plan to answer</h3>
+                <p>
+                  This is primarily a <strong>systems implementation</strong> project, but our evaluation is designed to
+                  answer concrete questions about the <strong>workload and machine mapping</strong>:
+                </p>
+                <ul>
+                  <li>
+                    <strong>Where does time go?</strong> What fraction of each timestep is thermal update vs geometry vs
+                    synchronization, and how does that split change with thread count?
+                  </li>
+                  <li>
+                    <strong>What limits speedup?</strong> Do we hit a barrier wall, memory bandwidth from irregular
+                    access after deformation, or insufficient parallelism for small meshes?
+                  </li>
+                  <li>
+                    <strong>How much does thermo-elastic coupling cost?</strong> How large is the slowdown vs a static
+                    mesh at equal resolution, and does that cost grow with hotspot severity?
+                  </li>
+                  <li>
+                    <strong>Does workload heterogeneity create imbalance?</strong> Under hotspot power maps, do we
+                    observe skewed per-thread times under static partitioning, and does a simpler dynamic scheme help?
+                  </li>
+                </ul>
+
+                <h3 class="title is-5" style="margin-top: 1.5rem">Optional poster demo</h3>
+                <p>
+                  <strong>Optional (not required for a strong project):</strong> If the binary is stable, we may run a
+                  short <strong>live</strong> demo at the poster: laptop showing a 2D temperature heatmap (and optionally
+                  exaggerated mesh deformation) stepping forward while we narrate thread count and problem size.
+                  Alternatively we will show <strong>pre-recorded</strong> clips or high-resolution stills—course staff
+                  emphasize thoughtful graphs and methodology over a live demo, and our primary artifact remains
+                  speedup/efficiency plots and phase breakdowns.
                 </p>
               </div>
             </div>

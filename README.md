@@ -53,6 +53,8 @@ git push -u origin main
 docs/
   index.html    # Full project + proposal (single page)
   style.css
+  assets/
+    processor-floor-plan.png
 ```
 
 Source materials in repo root: `project-proposal.md`, `Final Project Proposal.pdf`, `project-proposal-requirements.pdf`.

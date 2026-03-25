@@ -111,16 +111,25 @@ a:hover {
   color: var(--accent-hover) !important;
 }
 
-/* Teaser strip */
-.teaser .hero-body {
-  padding-top: 0;
-  padding-bottom: 3rem;
+/* Teaser strip — vertically centered tagline (Bulma .hero is a column flex) */
+.project-teaser.hero {
+  justify-content: center;
+  min-height: 12rem;
 }
 
 .project-teaser {
   font-family: "Google Sans", "Noto Sans", sans-serif;
   background: var(--teaser-bg);
   border-bottom: 1px solid rgba(42, 111, 127, 0.12);
+}
+
+.project-teaser .container {
+  width: 100%;
+}
+
+.project-teaser .hero-body {
+  padding: 2rem 1.25rem;
+  width: 100%;
 }
 
 .project-teaser .subtitle {
@@ -192,4 +201,27 @@ a:hover {
 
 .project-footer a:hover {
   color: var(--accent-hover);
+}
+
+/* Processor floor plan figure (Background) */
+.floorplan-figure {
+  margin: 0 auto 1.75rem;
+  max-width: min(100%, 760px);
+}
+
+.floorplan-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 6px 28px rgba(42, 111, 127, 0.15);
+  border: 1px solid rgba(42, 111, 127, 0.12);
+}
+
+.floorplan-figure figcaption {
+  margin-top: 0.85rem;
+  font-size: 0.92rem;
+  color: #4a5560;
+  line-height: 1.45;
+  text-align: center;
 }
