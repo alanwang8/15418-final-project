@@ -44,7 +44,6 @@ git push -u origin main
 | Split **PLAN / HOPE / behind** goals | § Goals and deliverables |
 | **PLATFORM CHOICE** | § Platform choice |
 | **SCHEDULE** (weekly + milestone) | § Schedule |
-| Optional poster demo | § Optional poster demo |
 | Gradescope PDF + URL | Your submission |
 
 ## Repository layout
