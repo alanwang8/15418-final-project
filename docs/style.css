@@ -1,0 +1,154 @@
+:root {
+  --text: #1a1a1a;
+  --muted: #555;
+  --accent: #0b5fff;
+  --border: #e0e0e0;
+  --bg: #fafafa;
+  --card: #fff;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.wrap {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 3rem;
+}
+
+header.site-header {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+}
+
+header.site-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0 0 0.35rem;
+  line-height: 1.25;
+}
+
+header.site-header .meta {
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+nav.site-nav {
+  margin-top: 1rem;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 0.95rem;
+}
+
+nav.site-nav a {
+  margin-right: 1.25rem;
+  font-weight: 500;
+}
+
+main h1 {
+  font-size: 1.75rem;
+  margin-top: 0;
+}
+
+main h2 {
+  font-size: 1.2rem;
+  margin: 2rem 0 0.75rem;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 650;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.35rem;
+}
+
+main h3 {
+  font-size: 1.05rem;
+  margin: 1.25rem 0 0.5rem;
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 600;
+}
+
+main h4 {
+  font-size: 1rem;
+  margin: 1rem 0 0.4rem;
+  font-weight: 600;
+}
+
+main p,
+main li {
+  margin: 0.5rem 0;
+}
+
+main ul {
+  margin: 0.5rem 0 1rem;
+  padding-left: 1.35rem;
+}
+
+main section {
+  margin-bottom: 0.5rem;
+}
+
+.url-note {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.url-note code {
+  font-size: 0.88em;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  margin: 1rem 0;
+  background: var(--card);
+  border: 1px solid var(--border);
+}
+
+th,
+td {
+  border: 1px solid var(--border);
+  padding: 0.5rem 0.65rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  font-family: system-ui, -apple-system, sans-serif;
+  font-weight: 600;
+  background: #f3f4f6;
+}
+
+footer.site-footer {
+  margin-top: 3rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.9rem;
+  color: var(--muted);
+}
