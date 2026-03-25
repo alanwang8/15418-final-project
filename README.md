@@ -5,7 +5,7 @@
 ## Project website
 
 - **Live site:** [https://alanwang8.github.io/15418-final-project/](https://alanwang8.github.io/15418-final-project/)
-- **Source:** single-page [`docs/index.html`](docs/index.html) with [`docs/style.css`](docs/style.css) (Bulma + [Nerfies](https://nerfies.github.io/)-style header).
+- **Source:** single-page [`docs/index.html`](docs/index.html) with [`docs/style.css`](docs/style.css) (Bulma + custom theme).
 
 ### First-time Git push
 

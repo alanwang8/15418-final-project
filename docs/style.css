@@ -1,12 +1,63 @@
-/* Nerfies-style additions on top of Bulma */
+/* Project page theme (Bulma overrides) */
+:root {
+  --accent: #b3523d;
+  --accent-hover: #943f2d;
+  --accent-muted: #c9a090;
+  --accent-soft: #faf5f2;
+  --accent-wash: #f3ebe6;
+  --teaser-bg: #e8f2f5;
+  --nav-bg: linear-gradient(90deg, #f5f0eb 0%, #eef4f6 100%);
+  --link: #2a6f7f;
+  --link-hover: #1d5563;
+}
+
 body {
   font-family: "Noto Sans", sans-serif;
+  background: linear-gradient(180deg, #faf8f6 0%, #f5f2ef 40%, #ffffff 100%);
+  min-height: 100vh;
+}
+
+a {
+  color: var(--link);
+}
+
+a:hover {
+  color: var(--link-hover);
+}
+
+/* Nav */
+.project-nav {
+  background: var(--nav-bg);
+  border-bottom: 1px solid rgba(179, 82, 61, 0.15);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.project-nav .navbar-item {
+  color: #3d3d3d;
+  font-weight: 500;
+}
+
+.project-nav .navbar-item:hover {
+  background: rgba(179, 82, 61, 0.08);
+  color: var(--accent);
+}
+
+/* Hero */
+.project-hero {
+  background: linear-gradient(165deg, #fdf9f6 0%, #f5ebe4 35%, #e8eef2 90%);
+  border-bottom: 1px solid rgba(179, 82, 61, 0.12);
+}
+
+.project-hero-meta {
+  margin-top: 0.75rem;
+  color: #5a5a5a;
 }
 
 .publication-title {
   font-family: "Google Sans", "Noto Sans", sans-serif;
   font-weight: 500;
   line-height: 1.15;
+  color: #2c2c2c;
 }
 
 .publication-authors {
@@ -14,15 +65,16 @@ body {
 }
 
 .publication-authors a {
-  color: hsl(204, 86%, 53%) !important;
+  color: var(--link) !important;
 }
 
 .publication-authors a:hover {
   text-decoration: underline;
+  color: var(--link-hover) !important;
 }
 
 .publication-venue {
-  color: #555;
+  color: var(--accent);
   font-weight: bold;
 }
 
@@ -36,21 +88,108 @@ body {
   margin-bottom: 5px;
 }
 
+.button.is-project {
+  background-color: var(--accent) !important;
+  border-color: transparent !important;
+  color: #fff !important;
+}
+
+.button.is-project:hover {
+  background-color: var(--accent-hover) !important;
+  color: #fff !important;
+}
+
+.button.is-project.is-outlined {
+  background-color: transparent !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+.button.is-project.is-outlined:hover {
+  background-color: rgba(179, 82, 61, 0.08) !important;
+  border-color: var(--accent-hover) !important;
+  color: var(--accent-hover) !important;
+}
+
+/* Teaser strip */
 .teaser .hero-body {
   padding-top: 0;
   padding-bottom: 3rem;
 }
 
-.teaser {
+.project-teaser {
   font-family: "Google Sans", "Noto Sans", sans-serif;
+  background: var(--teaser-bg);
+  border-bottom: 1px solid rgba(42, 111, 127, 0.12);
+}
+
+.project-teaser .subtitle {
+  color: #3a4a52;
+  font-weight: 500;
 }
 
 .dnerf {
   font-variant: small-caps;
+  color: var(--accent);
+  font-weight: 600;
 }
 
+/* Section headings */
+.section .title.is-3,
+.hero .title.is-3 {
+  color: #2c2c2c;
+  position: relative;
+  display: inline-block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.section .title.is-3::after,
+.hero .title.is-3::after {
+  content: "";
+  display: block;
+  height: 3px;
+  width: 2.5rem;
+  margin: 0.5rem auto 0;
+  background: linear-gradient(90deg, var(--accent), var(--accent-muted));
+  border-radius: 2px;
+}
+
+/* Light sections: slight tint */
+.hero.is-light {
+  background: var(--accent-soft) !important;
+}
+
+/* Table */
+.table thead th {
+  background: linear-gradient(180deg, #e8f0f3 0%, #dde8ec 100%) !important;
+  color: #2a4a55 !important;
+  border-color: rgba(42, 111, 127, 0.2) !important;
+}
+
+.table.is-bordered td,
+.table.is-bordered th {
+  border-color: rgba(0, 0, 0, 0.06);
+}
+
+.table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Footer */
 .project-footer {
   padding: 2rem 1.5rem;
   font-size: 0.9rem;
-  color: #666;
+  color: #5a5a5a;
+  background: var(--accent-wash);
+  border-top: 1px solid rgba(179, 82, 61, 0.15);
+}
+
+.project-footer a {
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.project-footer a:hover {
+  color: var(--accent-hover);
 }
