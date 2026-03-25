@@ -5,7 +5,6 @@
   --accent-muted: #c9a090;
   --accent-soft: #faf5f2;
   --accent-wash: #f3ebe6;
-  --teaser-bg: #e8f2f5;
   --nav-bg: linear-gradient(90deg, #f5f0eb 0%, #eef4f6 100%);
   --link: #2a6f7f;
   --link-hover: #1d5563;
@@ -109,38 +108,6 @@ a:hover {
   background-color: rgba(179, 82, 61, 0.08) !important;
   border-color: var(--accent-hover) !important;
   color: var(--accent-hover) !important;
-}
-
-/* Teaser strip — vertically centered tagline (Bulma .hero is a column flex) */
-.project-teaser.hero {
-  justify-content: center;
-  min-height: 12rem;
-}
-
-.project-teaser {
-  font-family: "Google Sans", "Noto Sans", sans-serif;
-  background: var(--teaser-bg);
-  border-bottom: 1px solid rgba(42, 111, 127, 0.12);
-}
-
-.project-teaser .container {
-  width: 100%;
-}
-
-.project-teaser .hero-body {
-  padding: 2rem 1.25rem;
-  width: 100%;
-}
-
-.project-teaser .subtitle {
-  color: #3a4a52;
-  font-weight: 500;
-}
-
-.dnerf {
-  font-variant: small-caps;
-  color: var(--accent);
-  font-weight: 600;
 }
 
 /* Section headings */

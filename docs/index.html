@@ -21,7 +21,7 @@
       <div class="navbar-menu is-active" style="display: flex; justify-content: center; flex-wrap: wrap">
         <a class="navbar-item" href="#summary">Summary</a>
         <a class="navbar-item" href="#background">Background</a>
-        <a class="navbar-item" href="#challenge">Challenge</a>
+        <a class="navbar-item" href="#challenges">Challenges</a>
         <a class="navbar-item" href="#resources">Resources</a>
         <a class="navbar-item" href="#goals">Goals</a>
         <a class="navbar-item" href="#platform">Platform</a>
@@ -65,17 +65,6 @@
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="hero teaser project-teaser">
-      <div class="container is-max-desktop">
-        <div class="hero-body">
-          <h2 class="subtitle is-4 has-text-centered" style="margin-bottom: 0">
-            <span class="dnerf">Thermo-elastic</span> coupling on a chip-scale mesh—parallel heat diffusion,
-            deformation, and scaling on multi-core CPUs.
-          </h2>
         </div>
       </div>
     </section>
@@ -161,12 +150,12 @@
       </div>
     </section>
 
-    <section class="section hero is-light" id="challenge">
+    <section class="section hero is-light" id="challenges">
       <div class="hero-body">
         <div class="container is-max-desktop">
           <div class="columns is-centered has-text-centered">
             <div class="column is-four-fifths">
-              <h2 class="title is-3">The challenge</h2>
+              <h2 class="title is-3">Challenges</h2>
               <div class="content has-text-justified">
                 <p>This problem is challenging due to the dynamic feedback loop between heat and geometry.</p>
                 <ul>
@@ -392,12 +381,6 @@
                     <strong>Scaling curve:</strong> Report speedup (or time-to-solution) for thread counts in
                     <strong>{1, 2, 4, 8}</strong> (and higher when hardware allows), with fixed total timesteps and mesh
                     size stated in the writeup.
-                  </li>
-                  <li>
-                    <strong>Cost of dynamics:</strong> Quantify the slowdown versus a <strong>static-mesh</strong> run
-                    at the same resolution and thread count (deformation/conductance updates disabled or fixed).
-                    <em>Justification:</em> Same codebase path toggled via a flag keeps the comparison fair and
-                    isolates thermo-elastic overhead.
                   </li>
                   <li>
                     <strong>Load imbalance signal:</strong> For at least one hotspot-style power map, report per-thread

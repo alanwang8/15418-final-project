@@ -39,7 +39,7 @@ git push -u origin main
 | **URL** of project web page | § URL + footer |
 | **SUMMARY** (≤2–3 sentences) + parallel systems | § Summary |
 | **BACKGROUND** | § Background |
-| **THE CHALLENGE** | § The challenge |
+| **THE CHALLENGE** | § Challenges |
 | **RESOURCES** | § Resources + References |
 | Split **PLAN / HOPE / behind** goals | § Goals and deliverables |
 | **PLATFORM CHOICE** | § Platform choice |
