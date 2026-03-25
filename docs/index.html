@@ -3,32 +3,533 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>15-418 Project — Dynamic Thermo-Elastic Mesh Simulation</title>
+    <meta
+      name="description"
+      content="Parallel thermo-elastic mesh simulation: thermal diffusion on a dynamic 2D mesh with OpenMP/pthreads."
+    />
+    <title>Dynamic Thermo-Elastic Mesh Simulation — CMU 15-418</title>
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="wrap">
-      <header class="site-header">
-        <h1>Dynamic Thermo-Elastic Mesh Simulation for Parallel Systems</h1>
-        <p class="meta">15-418 / 15-618 · Allison &amp; Alan</p>
-        <nav class="site-nav" aria-label="Project sections">
-          <a href="index.html" aria-current="page">Home</a>
-          <a href="proposal.html">Project proposal</a>
-        </nav>
-      </header>
-      <main>
+    <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+      <div class="navbar-menu is-active" style="display: flex; justify-content: center; flex-wrap: wrap">
+        <a class="navbar-item" href="#summary">Summary</a>
+        <a class="navbar-item" href="#background">Background</a>
+        <a class="navbar-item" href="#challenge">Challenge</a>
+        <a class="navbar-item" href="#resources">Resources</a>
+        <a class="navbar-item" href="#goals">Goals</a>
+        <a class="navbar-item" href="#platform">Platform</a>
+        <a class="navbar-item" href="#schedule">Schedule</a>
+        <a class="navbar-item" href="#references">References</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered">
+            <div class="column has-text-centered">
+              <h1 class="title is-1 publication-title">Dynamic Thermo-Elastic Mesh Simulation for Parallel Systems</h1>
+              <div class="is-size-5 publication-authors">
+                <span class="author-block">Alan Wang,</span>
+                <span class="author-block">Allison Chen</span>
+              </div>
+              <div class="is-size-5 publication-authors" style="margin-top: 0.5rem">
+                <span class="author-block publication-venue">Carnegie Mellon University</span>
+              </div>
+              <p class="is-size-6" style="margin-top: 0.75rem; color: #666">
+                15-418 / 15-618 · Spring 2026
+              </p>
+
+              <div class="column has-text-centered" style="margin-top: 1rem">
+                <div class="publication-links">
+                  <span class="link-block">
+                    <a href="#summary" class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon"><i class="fas fa-book-open"></i></span>
+                      <span>Proposal</span>
+                    </a>
+                  </span>
+                  <span class="link-block">
+                    <a
+                      href="https://github.com/alanwang8/15418-final-project/raw/main/Final%20Project%20Proposal.pdf"
+                      class="external-link button is-normal is-rounded is-dark"
+                    >
+                      <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                      <span>Proposal PDF</span>
+                    </a>
+                  </span>
+                  <span class="link-block">
+                    <a
+                      href="https://github.com/alanwang8/15418-final-project"
+                      class="external-link button is-normal is-rounded is-dark"
+                    >
+                      <span class="icon"><i class="fab fa-github"></i></span>
+                      <span>Code</span>
+                    </a>
+                  </span>
+                  <span class="link-block">
+                    <a href="http://www.cs.cmu.edu/~418/projects.html" class="external-link button is-normal is-rounded is-dark">
+                      <span class="icon"><i class="fas fa-graduation-cap"></i></span>
+                      <span>15-418 Projects</span>
+                    </a>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="hero teaser">
+      <div class="container is-max-desktop">
+        <div class="hero-body">
+          <h2 class="subtitle is-4 has-text-centered">
+            <span class="dnerf">Thermo-elastic</span> coupling on a chip-scale mesh—parallel heat diffusion,
+            deformation, and scaling on multi-core CPUs.
+          </h2>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="summary">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Summary</h2>
+            <div class="content has-text-justified">
+              <p>
+                We will build a parallel simulator of thermal diffusion on a dynamic 2D mesh where elements deform
+                based on temperature, inspired by shape-memory alloys. The simulation will model heat flow and
+                structural feedback across a processor floorplan, parallelized using C++ and OpenMP/pthreads on
+                multi-core CPU systems.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section hero is-light is-small" id="url">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-four-fifths">
+              <h2 class="title is-3">URL</h2>
+              <p class="is-size-5">
+                <strong>Project web page:</strong>
+                <a href="https://alanwang8.github.io/15418-final-project/">https://alanwang8.github.io/15418-final-project/</a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="background">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Background</h2>
+            <div class="content has-text-justified">
+              <p>
+                Our project focuses on simulating how heat spreads and causes stress in a processor chip, taking
+                inspiration from materials like shape-memory alloys (SMAs) that deform predictably with temperature.
+                While real chips don’t actively deform like SMAs, thermal hotspots still cause small expansions and
+                mechanical stress in silicon and metal layers, which can affect heat flow and reliability. Our goal is
+                to model this thermomechanical coupling in a simplified but realistic way.
+              </p>
+              <p>
+                We represent the chip as a 2D mesh of cells, where each cell corresponds to a functional unit, such as
+                an ALU, cache block, or interconnect region. Each cell has a temperature, generates heat based on its
+                activity, and conducts heat to its neighbors. The core computation involves updating each cell’s
+                temperature from its neighbors and its own power generation, then computing how much it expands due to
+                heating. The expansion slightly changes the effective distance to neighboring cells, which affects heat
+                conduction in the next timestep.
+              </p>
+              <p>
+                This simulation is compute-intensive because each cell must repeatedly update both temperature and
+                strain, and these updates depend on the current state of neighboring cells. The problem is naturally
+                suited to parallelism: updates for different cells can be computed simultaneously since each timestep
+                only depends on the previous values. However, as hotspots form, some regions may require more
+                computation than others, creating potential load imbalance. Parallelizing over cells or blocks of cells
+                allows multiple cores to work together efficiently, speeding up the simulation while handling the
+                evolving workload.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section hero is-light" id="challenge">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-four-fifths">
+              <h2 class="title is-3">The challenge</h2>
+              <div class="content has-text-justified">
+                <p>This problem is challenging due to the dynamic feedback loop between heat and geometry.</p>
+                <ul>
+                  <li>
+                    <strong>Workload characteristics:</strong> The simulation involves high spatial locality but faces
+                    divergent execution if certain regions (hotspots) require more complex deformation or topology
+                    updates than others.
+                  </li>
+                  <li>
+                    <strong>Dependencies:</strong> There is a strict temporal dependency; geometry updates depend on the
+                    new temperature state, and the next temperature state depends on the updated geometry.
+                  </li>
+                  <li>
+                    <strong>System constraints:</strong> As elements move or expand, memory access patterns that were
+                    once predictable (in a static grid) may become irregular, leading to cache misses and potential load
+                    imbalances.
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="resources">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Resources</h2>
+            <div class="content has-text-justified">
+              <ul>
+                <li>
+                  <strong>Computers:</strong> We will use the GHC lab machines and/or the PSC cluster for multi-core
+                  CPU testing.
+                </li>
+                <li>
+                  <strong>Code base:</strong> We are starting from scratch to build a custom C++/OpenMP engine.
+                </li>
+                <li>
+                  <strong>References:</strong> We are utilizing HotSpot for architecture-level thermal modeling concepts
+                  and recent research on parallel finite-difference heat equations. See the
+                  <a href="#references">references</a> section below.
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section hero is-light" id="goals">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-four-fifths">
+              <h2 class="title is-3">Goals and deliverables</h2>
+              <div class="content has-text-justified">
+                <h3 class="title is-5">Plan to achieve (must complete)</h3>
+
+                <h4 class="title is-6">1. 2D mesh simulator</h4>
+                <p><strong>Cell characteristics:</strong></p>
+                <ul>
+                  <li><strong>Temperature (T):</strong> Current temperature of the cell.</li>
+                  <li>
+                    <strong>Heat capacity (c):</strong> How much energy it takes to raise the cell’s temperature—can
+                    vary by type (ALU, cache, interconnect).
+                  </li>
+                  <li>
+                    <strong>Power generation (p):</strong> Amount of heat the cell produces per timestep, reflecting
+                    activity level.
+                  </li>
+                  <li>
+                    <strong>Thermal conductivity (k):</strong> Rate at which the cell exchanges heat with each neighbor.
+                    Can be directional if desired (e.g., vertical vs horizontal conduction).
+                  </li>
+                  <li>
+                    <strong>Neighbors (N<sub>i</sub>):</strong> List of adjacent cells or a fixed stencil (4-way or
+                    8-way).
+                  </li>
+                </ul>
+                <p><strong>Customizable aspects:</strong></p>
+                <ul>
+                  <li>Different cell types with distinct c, p, k values.</li>
+                  <li>
+                    Cell type tagging: ALU, cache, memory, interconnect → different thermal/mechanical parameters.
+                  </li>
+                  <li>Non-uniform mesh spacing (some cells larger to represent bigger blocks).</li>
+                  <li>Boundary conditions: fixed temperature, heat sink, or insulated edges.</li>
+                </ul>
+
+                <h4 class="title is-6">2. Coupled deformation</h4>
+                <p>
+                  <strong>Goal:</strong> Model thermomechanical feedback: cells expand/contract depending on
+                  temperature, affecting thermal coupling.
+                </p>
+                <p><strong>Cell characteristics:</strong></p>
+                <ul>
+                  <li>
+                    <strong>Coefficient of thermal expansion (α):</strong> Determines how much the cell expands per unit
+                    temperature rise.
+                  </li>
+                  <li>
+                    <strong>Geometry / size:</strong> Width/height or area of the cell (affects neighbor distances and
+                    thus conductance).
+                  </li>
+                  <li><strong>Strain / displacement (ε):</strong> Optional: track cumulative deformation.</li>
+                  <li>
+                    <strong>Neighbor conductances (k<sub>ij</sub>):</strong> Adjust dynamically based on
+                    expansion/contraction.
+                  </li>
+                </ul>
+                <p><strong>Customizable aspects:</strong></p>
+                <ul>
+                  <li>Different expansion coefficients per material type.</li>
+                  <li>Adjustable method of conductance scaling (linear, nonlinear, capped, or weighted by distance).</li>
+                  <li>Option to track cumulative strain for “reliability-aware” simulations.</li>
+                </ul>
+
+                <h4 class="title is-6">3. Parallel multi-threaded implementation</h4>
+                <p><strong>Goal:</strong> Accelerate simulation by updating many cells simultaneously.</p>
+                <p><strong>Considerations per cell:</strong></p>
+                <ul>
+                  <li>Updates for T and strain are independent within a timestep (based on previous step’s values).</li>
+                  <li>
+                    Neighbor access pattern: for conductance update, a cell may read adjacent cells’ strain; avoid race
+                    conditions via double-buffering or per-thread local copies.
+                  </li>
+                  <li>
+                    Workload weight: Some cells produce more heat, which causes larger temperature changes, which means
+                    more compute in some areas.
+                  </li>
+                </ul>
+                <p><strong>Customizable aspects:</strong></p>
+                <ul>
+                  <li>Choice of threading library: OpenMP, pthreads, or hybrid.</li>
+                  <li>Thread assignment strategy: static blocks vs. dynamic work queue.</li>
+                  <li>Adjustable number of threads for scaling experiments.</li>
+                </ul>
+
+                <h4 class="title is-6">4. Performance evaluation</h4>
+                <p>
+                  <strong>Goal:</strong> Measure how efficiently the simulation scales across multiple threads and
+                  explore the effects of different parallelization strategies. The focus is on achieving high speedup and
+                  maintaining good load balance, rather than on detailed thermal correctness.
+                </p>
+                <p><strong>Metrics:</strong></p>
+                <ul>
+                  <li>
+                    <strong>Speedup:</strong> wall-clock time with one thread divided by wall-clock time with N threads
+                    (T<sub>1</sub> / T<sub>N</sub>).
+                  </li>
+                  <li>
+                    <strong>Parallel efficiency:</strong> How close observed scaling is to ideal linear speedup.
+                  </li>
+                  <li>
+                    <strong>Load balance:</strong> Track per-thread execution time or work distribution to identify
+                    imbalance caused by hotspots or irregular mesh layouts.
+                  </li>
+                </ul>
+                <p><strong>Customizable aspects (for achievable experiments):</strong></p>
+                <ul>
+                  <li>Mesh size: e.g., 100×100, 500×500 cells</li>
+                  <li>Power patterns: uniform, a few hotspots, or random loads</li>
+                  <li>Number of threads and thread scheduling strategies (static vs. simple dynamic partitioning)</li>
+                </ul>
+                <p><strong>Analysis approach:</strong></p>
+                <ul>
+                  <li>Break down execution time into compute, synchronization, and geometry update phases.</li>
+                  <li>Compare speedup across thread counts to evaluate how close the simulation gets to ideal scaling.</li>
+                  <li>
+                    Identify major bottlenecks, such as memory contention, synchronization barriers, or uneven
+                    workloads.
+                  </li>
+                  <li>Present graphs showing speedup vs. thread count, per-thread load distribution, and time breakdowns.</li>
+                </ul>
+                <p><strong>Potential solutions:</strong></p>
+                <ul>
+                  <li>
+                    Overlap temperature update and geometry update using double buffering and fine-grained
+                    synchronization, so some threads start computing the next step while others finish current mesh
+                    updates.
+                  </li>
+                  <li>
+                    Experiment with non-blocking barriers or pipelined updates to reduce waiting time between timesteps.
+                  </li>
+                </ul>
+
+                <h3 class="title is-5" style="margin-top: 2rem">Hope to achieve (if ahead of schedule)</h3>
+                <h4 class="title is-6">1. Interactive / live simulation</h4>
+                <ul>
+                  <li>
+                    Allow the simulator to run in near real-time, updating heatmaps and strain dynamically as power
+                    inputs change.
+                  </li>
+                  <li>Provide a live visualization of the mesh deforming or the heat flow changing over time.</li>
+                </ul>
+                <h4 class="title is-6">2. Customizable inputs &amp; scenarios</h4>
+                <ul>
+                  <li>
+                    Write a program or interface to adjust power profiles on-the-fly, e.g., simulate a hotspot suddenly
+                    powering up.
+                  </li>
+                  <li>
+                    Allow users to set cell material properties, expansion coefficients, or thermal conductances
+                    dynamically.
+                  </li>
+                  <li>Include dynamic load injection to test extreme or non-uniform scenarios.</li>
+                </ul>
+                <h4 class="title is-6">3. Flexible mesh / floorplan import</h4>
+                <ul>
+                  <li>
+                    Support importing arbitrary processor floorplans, e.g., from JSON, CSV, or standard CAD formats.
+                  </li>
+                  <li>Map imported floorplans to the mesh, assigning thermal properties to each block automatically.</li>
+                </ul>
+                <h4 class="title is-6">4. Enhanced visualization &amp; output</h4>
+                <ul>
+                  <li>Generate animated heatmaps or videos showing thermal propagation and mesh deformation over time.</li>
+                  <li>
+                    Produce performance dashboards combining heatmaps, strain, and thread utilization for parallel runs.
+                  </li>
+                </ul>
+
+                <h3 class="title is-5" style="margin-top: 2rem">If we fall behind</h3>
+                <p>
+                  We will prioritize a working core: static (or minimally dynamic) mesh, basic thermal diffusion, a
+                  simple deformation model, and multi-threaded speedup experiments. Full unstructured topology updates,
+                  advanced scheduling studies, or optional GPU work can be deferred to protect the milestone and final
+                  evaluation.
+                </p>
+
+                <h3 class="title is-5" style="margin-top: 1rem">Optional poster demo</h3>
+                <p>
+                  If time and stability allow, we may show a short live or recorded demo of the simulator (heatmap
+                  and/or mesh deformation) alongside our performance graphs at the poster session. A demo is optional;
+                  the main emphasis remains experimental evaluation and scaling analysis.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="platform">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Platform choice</h2>
+            <div class="content has-text-justified">
+              <p>
+                We have chosen C++ with OpenMP/pthreads for shared-memory parallelism. This platform allows for
+                fine-grained control over memory layout (Structure-of-Arrays vs. Array-of-Structures), which is
+                critical when managing the cache locality of a mesh that is physically moving in memory.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section hero is-light" id="schedule">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-four-fifths">
+              <h2 class="title is-3">Schedule</h2>
+              <div class="content has-text-justified">
+                <table class="table is-fullwidth is-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col">Week</th>
+                      <th scope="col">Task / milestone</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Mar 23–25</td>
+                      <td>Finalize design and submit proposal (due Mar 25).</td>
+                    </tr>
+                    <tr>
+                      <td>Mar 26–31</td>
+                      <td>Implement serial static mesh and verify heat diffusion correctness.</td>
+                    </tr>
+                    <tr>
+                      <td>Apr 1–7</td>
+                      <td>Implement temperature-dependent expansion and initial OpenMP parallel loops.</td>
+                    </tr>
+                    <tr>
+                      <td>Apr 8–14</td>
+                      <td>
+                        <strong>Milestone:</strong> Working parallel prototype; measure initial speedups (milestone
+                        report due Apr 14).
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Apr 15–21</td>
+                      <td>Refine data structures for unstructured mesh; experiment with dynamic scheduling.</td>
+                    </tr>
+                    <tr>
+                      <td>Apr 22–28</td>
+                      <td>Run final experiments across various mesh sizes and thread counts.</td>
+                    </tr>
+                    <tr>
+                      <td>Apr 29–30</td>
+                      <td>Final report writing and poster preparation (final report due Apr 30).</td>
+                    </tr>
+                    <tr>
+                      <td>May 1</td>
+                      <td>Poster session (15-418: 8:30am–11:30am, Friday May 1).</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="references">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">References</h2>
+            <div class="content has-text-justified">
+              <ol>
+                <li>
+                  Chikhareva, M. &amp; Vaidyanathan, R. (2023). A Thermal, Mechanical, and Materials Framework for a
+                  Shape Memory Alloy Heat Engine for Thermal Management. <em>Nanomaterials</em>, 13(15):2159.
+                </li>
+                <li>
+                  Stan, M. R., Skadron, K., et al. (2003). HotSpot: a Dynamic Compact Thermal Model at the
+                  Processor-Architecture Level. <em>IEEE Micro</em> 23(4), pp. 32–46.
+                </li>
+                <li>
+                  Chakkour, T., Sánchez, A. D., &amp; Cai, X. C. (2024). Parallel Computation to Bidimensional Heat
+                  Equation using MPI/CUDA and FFTW. <em>Frontiers in Computer Science</em>, 5:1305800.
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer project-footer">
+      <div class="content has-text-centered">
         <p>
-          This site hosts our course project: a parallel simulator of thermal diffusion on a dynamic 2D mesh
-          with temperature-dependent deformation, implemented in C++ with OpenMP/pthreads on multi-core CPUs.
+          Project page:
+          <a href="https://alanwang8.github.io/15418-final-project/">https://alanwang8.github.io/15418-final-project/</a>
+          · CMU 15-418/15-618 · Spring 2026
         </p>
-        <p>
-          We will post milestone updates, results, and the final report here as the project progresses. The
-          <a href="proposal.html">project proposal</a> is available as a dedicated page (due March 25, 2026).
-        </p>
-      </main>
-      <footer class="site-footer">
-        <p>CMU 15-418/15-618 · Spring 2026</p>
-      </footer>
-    </div>
+        <p class="is-size-7">Page layout inspired by <a href="https://nerfies.github.io/">Nerfies</a> (Bulma + project header).</p>
+      </div>
+    </footer>
   </body>
 </html>
