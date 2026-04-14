@@ -15,8 +15,8 @@
         box-shadow: 0 4px 16px rgba(42,111,127,0.13); border: 1px solid rgba(42,111,127,0.12); }
       .result-figure figcaption { margin-top: 0.6rem; font-size: 0.88rem; color: #4a5560;
         text-align: center; line-height: 1.4; }
-      .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
-      @media (max-width: 720px) { .result-grid { grid-template-columns: 1fr; } }
+      /* Single column — each figure gets full width */
+      .result-grid { display: flex; flex-direction: column; gap: 2rem; margin: 1.5rem 0; }
       .tag-done    { background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 4px;
         font-size: 0.82rem; font-weight: 600; }
       .tag-wip     { background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 4px;
