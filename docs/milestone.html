@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Milestone report for the Dynamic Thermo-Elastic Mesh Simulation project — CMU 15-418 Spring 2026." />
+    <title>Milestone Report — Dynamic Thermo-Elastic Mesh Simulation</title>
+    <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .result-figure { margin: 1.5rem 0; }
+      .result-figure img, .result-figure object { width: 100%; border-radius: 6px;
+        box-shadow: 0 4px 16px rgba(42,111,127,0.13); border: 1px solid rgba(42,111,127,0.12); }
+      .result-figure figcaption { margin-top: 0.6rem; font-size: 0.88rem; color: #4a5560;
+        text-align: center; line-height: 1.4; }
+      .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin: 1.5rem 0; }
+      @media (max-width: 720px) { .result-grid { grid-template-columns: 1fr; } }
+      .tag-done    { background: #d1fae5; color: #065f46; padding: 2px 8px; border-radius: 4px;
+        font-size: 0.82rem; font-weight: 600; }
+      .tag-wip     { background: #fef3c7; color: #92400e; padding: 2px 8px; border-radius: 4px;
+        font-size: 0.82rem; font-weight: 600; }
+      .tag-pending { background: #f3f4f6; color: #6b7280; padding: 2px 8px; border-radius: 4px;
+        font-size: 0.82rem; font-weight: 600; }
+      .callout { padding: 1rem 1.25rem; border-radius: 6px; margin: 1.25rem 0; }
+      .callout-info    { background: #eff6ff; border-left: 4px solid #3b82f6; }
+      .callout-warning { background: #fffbeb; border-left: 4px solid #f59e0b; }
+      .callout-success { background: #f0fdf4; border-left: 4px solid #22c55e; }
+      .callout-danger  { background: #fff1f0; border-left: 4px solid #ef4444; }
+      code { background: #f4f4f4; padding: 1px 5px; border-radius: 3px; font-size: 0.9em; }
+      pre  { background: #f4f4f4; padding: 1rem; border-radius: 6px; overflow-x: auto;
+        font-size: 0.88em; }
+    </style>
+  </head>
+  <body>
+
+    <!-- Navbar -->
+    <nav class="navbar project-nav" role="navigation" aria-label="main navigation">
+      <div class="navbar-menu is-active" style="display: flex; justify-content: center; flex-wrap: wrap">
+        <a class="navbar-item" href="index.html">Home</a>
+        <a class="navbar-item" href="index.html#summary">Summary</a>
+        <a class="navbar-item" href="index.html#goals">Goals</a>
+        <a class="navbar-item" href="index.html#schedule">Schedule</a>
+        <a class="navbar-item" href="milestone.html" style="font-weight:700; color: var(--accent)">Milestone</a>
+      </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero project-hero">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered">
+            <div class="column has-text-centered">
+              <h1 class="title is-2 publication-title">Milestone Report</h1>
+              <h2 class="title is-4 publication-title" style="font-weight:400; color:#555">
+                Dynamic Thermo-Elastic Mesh Simulation for Parallel Systems
+              </h2>
+              <div class="is-size-5 publication-authors" style="margin-top:0.75rem">
+                <span class="author-block">Alan Wang,</span>
+                <span class="author-block">Allison Chen</span>
+              </div>
+              <p class="is-size-6 project-hero-meta">
+                CMU 15-418 / 15-618 · Spring 2026 · Due April 14, 2026
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- Updated Schedule -->
+    <!-- ================================================================== -->
+    <section class="section hero is-light" id="schedule">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered has-text-centered">
+            <div class="column is-four-fifths">
+              <h2 class="title is-3">Updated Schedule</h2>
+              <div class="content has-text-justified">
+                <table class="table is-fullwidth is-bordered">
+                  <thead>
+                    <tr>
+                      <th>Dates</th>
+                      <th>Task</th>
+                      <th>Owner</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Mar 23–25</td>
+                      <td>Finalize design and submit proposal</td>
+                      <td>Both</td>
+                      <td><span class="tag-done">✓ Done</span></td>
+                    </tr>
+                    <tr>
+                      <td>Mar 26–31</td>
+                      <td>Serial static mesh; verify heat diffusion correctness</td>
+                      <td>Allison</td>
+                      <td><span class="tag-done">✓ Done</span></td>
+                    </tr>
+                    <tr>
+                      <td>Apr 1–7</td>
+                      <td>Temperature-dependent expansion; initial OpenMP parallel loops</td>
+                      <td>Alan</td>
+                      <td><span class="tag-done">✓ Done</span></td>
+                    </tr>
+                    <tr>
+                      <td>Apr 8–14</td>
+                      <td><strong>Milestone:</strong> Working parallel prototype; initial speedups measured</td>
+                      <td>Both</td>
+                      <td><span class="tag-done">✓ Done</span></td>
+                    </tr>
+                    <tr>
+                      <td>Apr 14–17</td>
+                      <td>Extend to full 3D geometry (per instructor feedback); refine conductance model</td>
+                      <td>Allison</td>
+                      <td><span class="tag-wip">⟳ In progress</span></td>
+                    </tr>
+                    <tr>
+                      <td>Apr 18–21</td>
+                      <td>Dynamic scheduling experiments; profile load balance under hotspot workloads</td>
+                      <td>Alan</td>
+                      <td><span class="tag-pending">Pending</span></td>
+                    </tr>
+                    <tr>
+                      <td>Apr 22–25</td>
+                      <td>Full benchmark sweep: 500×500 mesh, all patterns, 1–16 threads on GHC</td>
+                      <td>Both</td>
+                      <td><span class="tag-pending">Pending</span></td>
+                    </tr>
+                    <tr>
+                      <td>Apr 26–28</td>
+                      <td>Generate all result plots; polish visualizations and heatmaps</td>
+                      <td>Allison</td>
+                      <td><span class="tag-pending">Pending</span></td>
+                    </tr>
+                    <tr>
+                      <td>Apr 29–30</td>
+                      <td>Write final report (~10 pages) and prepare poster</td>
+                      <td>Both</td>
+                      <td><span class="tag-pending">Pending</span></td>
+                    </tr>
+                    <tr>
+                      <td>May 1</td>
+                      <td>Poster session — 15-418: 8:30–11:30am</td>
+                      <td>Both</td>
+                      <td><span class="tag-pending">Pending</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- Progress Summary -->
+    <!-- ================================================================== -->
+    <section class="section" id="progress">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3 has-text-centered">Work Completed</h2>
+            <div class="content">
+
+              <h3 class="title is-5">1. Serial Baseline: Heat Diffusion Engine</h3>
+              <p>
+                We implemented a fully functional serial simulator in C++17. The mesh is stored as a
+                flat row-major array of <code>Cell</code> structs, each holding temperature, material
+                properties (heat capacity <em>c</em>, conductivity <em>k</em>, power generation <em>p</em>),
+                and a full 3D position (<em>x, y, z</em>). The thermal update follows the explicit
+                finite-difference discretization:
+              </p>
+              <pre>T_i^new = T_i + Δt · (p_i + Σ_{j∈N(i)} k_ij · (T_j − T_i)) / c_i</pre>
+              <p>
+                where <code>k_ij = min(k_i, k_j) / dist3D(i,j)</code> — conductance scales inversely with
+                the 3D Euclidean distance between cells, so geometry directly affects heat flow.
+                We use <strong>double-buffering</strong>: all reads come from the current temperature array
+                and writes go to a separate buffer which is swapped at the end of each step. This eliminates
+                race conditions and ensures all cells update from the same consistent snapshot.
+                Boundary cells are held at ambient temperature (300 K) to act as heat sinks.
+              </p>
+
+              <h3 class="title is-5" style="margin-top:1.75rem">2. 3D Geometry Update (Buckling)</h3>
+              <p>
+                Per instructor feedback, we extended the model beyond a flat 2D plane to support
+                <strong>out-of-plane deformation</strong>. After each thermal step, each cell's
+                z-coordinate is updated:
+              </p>
+              <pre>z_i = α_i · (T_i − T_ref) · base_size · Z_amplify</pre>
+              <p>
+                Hot cells rise above the chip plane; cooler cells remain near z = 0. This buckling
+                changes the 3D distances to neighboring cells, which feeds back into the conductance
+                weights in the subsequent timestep — creating a genuine thermomechanical coupling loop.
+              </p>
+
+              <h3 class="title is-5" style="margin-top:1.75rem">3. OpenMP Parallel Implementation</h3>
+              <p>
+                We parallelized both the thermal update loop and the geometry update loop using
+                <code>#pragma omp parallel for</code>. We support both <strong>static</strong> and
+                <strong>dynamic</strong> scheduling strategies, selectable at runtime. The implicit
+                barrier at the end of each <code>omp parallel for</code> ensures the geometry update
+                never runs before the thermal update completes, preserving correctness.
+              </p>
+              <p>
+                Thread count is controlled via CLI flag (<code>--threads N</code>), and all timings
+                are measured with <code>std::chrono::high_resolution_clock</code> for the total run,
+                with separate accounting for thermal vs. geometry phases.
+              </p>
+
+              <h3 class="title is-5" style="margin-top:1.75rem">4. Floorplan Configurations</h3>
+              <p>We implemented four floorplan patterns to exercise different workload characteristics:</p>
+              <ul>
+                <li><strong>Uniform:</strong> All cache-type cells with equal power — minimal imbalance, best for baseline scaling.</li>
+                <li><strong>Hotspot-1:</strong> Single ALU cluster at center with 5× power — creates one localized thermal hotspot.</li>
+                <li><strong>Hotspot-4:</strong> Four ALU clusters at quadrant centers with interconnect strips — models a realistic multicore layout.</li>
+                <li><strong>Random:</strong> Randomly assigned types and power multipliers — exercises non-uniform workload handling.</li>
+              </ul>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- Preliminary Results -->
+    <!-- ================================================================== -->
+    <section class="section hero is-light" id="results">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered">
+            <div class="column is-four-fifths">
+              <h2 class="title is-3 has-text-centered">Preliminary Results</h2>
+              <div class="content">
+
+                <h3 class="title is-5">Correctness Validation</h3>
+                <div class="callout callout-success">
+                  <strong>Key check:</strong> Serial and 8-thread OpenMP runs on the same input produce
+                  identical T_max and T_mean values (e.g., both yield T_max = 309.999 K for hotspot-1,
+                  100×100 mesh, 100 steps). Double-buffering eliminates all race conditions.
+                </div>
+
+                <p>
+                  The heatmaps below show results after 200 timesteps on a 100×100 mesh. The hotspot-1
+                  temperature map shows the expected Gaussian-like thermal plume radiating outward from
+                  the central ALU cluster. The corresponding z-displacement map shows the central cells
+                  buckling upward as they heat — the 3D deformation creating a dome-like profile that
+                  changes neighbor distances and thus conductance in subsequent steps.
+                </p>
+
+                <div class="result-grid">
+                  <figure class="result-figure">
+                    <object data="assets/results/heatmap_hotspot1_T.svg" type="image/svg+xml"></object>
+                    <figcaption>
+                      <strong>Fig 1.</strong> Temperature distribution — hotspot-1 pattern, 100×100 mesh,
+                      200 steps. Hot = yellow/white, cool = black/red.
+                    </figcaption>
+                  </figure>
+                  <figure class="result-figure">
+                    <object data="assets/results/heatmap_hotspot1_z.svg" type="image/svg+xml"></object>
+                    <figcaption>
+                      <strong>Fig 2.</strong> 3D buckling displacement — same run.
+                      Red = upward (hot cells), blue = near zero (cool boundary cells).
+                    </figcaption>
+                  </figure>
+                  <figure class="result-figure">
+                    <object data="assets/results/heatmap_hotspot4_T.svg" type="image/svg+xml"></object>
+                    <figcaption>
+                      <strong>Fig 3.</strong> Temperature — hotspot-4 pattern (four ALU clusters).
+                      Models a realistic multicore chip floorplan.
+                    </figcaption>
+                  </figure>
+                  <figure class="result-figure">
+                    <object data="assets/results/heatmap_hotspot4_z.svg" type="image/svg+xml"></object>
+                    <figcaption>
+                      <strong>Fig 4.</strong> 3D buckling — hotspot-4 pattern. Four localized
+                      displacement peaks correspond to the four ALU hotspots.
+                    </figcaption>
+                  </figure>
+                </div>
+
+                <h3 class="title is-5" style="margin-top:2rem">Initial Speedup Measurements</h3>
+                <p>
+                  The results below are from an initial run on our development machine. We will run the
+                  full sweep on GHC lab machines (April 22–25) for the final report. Mesh: 100×100,
+                  200 timesteps, static scheduling, averaged over 3 trials.
+                </p>
+
+                <table class="table is-fullwidth is-bordered">
+                  <thead>
+                    <tr>
+                      <th>Threads</th>
+                      <th>Pattern</th>
+                      <th>Avg Time (ms)</th>
+                      <th>Speedup</th>
+                      <th>Parallel Efficiency</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>1</td><td>Uniform</td><td>35.3</td><td>1.00×</td><td>100%</td></tr>
+                    <tr><td>2</td><td>Uniform</td><td>14.3</td><td>2.46×</td><td>~99%</td></tr>
+                    <tr><td>4</td><td>Uniform</td><td>7.5</td><td>4.71×</td><td>~95%</td></tr>
+                    <tr><td>8</td><td>Uniform</td><td>4.4</td><td>8.09×</td><td>~81%</td></tr>
+                    <tr><td>1</td><td>Hotspot-1</td><td>27.9</td><td>1.00×</td><td>100%</td></tr>
+                    <tr><td>2</td><td>Hotspot-1</td><td>14.4</td><td>1.94×</td><td>97%</td></tr>
+                    <tr><td>4</td><td>Hotspot-1</td><td>7.6</td><td>3.69×</td><td>92%</td></tr>
+                    <tr><td>8</td><td>Hotspot-1</td><td>4.5</td><td>6.16×</td><td>77%</td></tr>
+                  </tbody>
+                </table>
+
+                <div class="result-grid">
+                  <figure class="result-figure">
+                    <object data="assets/results/speedup_100x100_static.svg" type="image/svg+xml"></object>
+                    <figcaption>
+                      <strong>Fig 5.</strong> Speedup vs. thread count — 100×100 mesh, static scheduling.
+                      Dashed line = ideal linear speedup.
+                    </figcaption>
+                  </figure>
+                  <figure class="result-figure">
+                    <object data="assets/results/time_breakdown_100x100.svg" type="image/svg+xml"></object>
+                    <figcaption>
+                      <strong>Fig 6.</strong> Time breakdown: thermal update vs. geometry update.
+                      Thermal dominates (~93%); geometry overhead is lightweight.
+                    </figcaption>
+                  </figure>
+                </div>
+
+                <div class="callout callout-info">
+                  <strong>Key observation:</strong> Uniform workloads achieve near-ideal scaling (8.09× at
+                  8 threads). The hotspot-1 pattern shows lower efficiency (6.16× at 8 threads) — the
+                  central high-temperature cells have larger conductance variations, introducing slight
+                  load imbalance even with a structured grid. We will investigate dynamic scheduling to
+                  address this in the next phase (April 18–21).
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- Goals Assessment -->
+    <!-- ================================================================== -->
+    <section class="section" id="goals">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3 has-text-centered">Goals Assessment</h2>
+            <div class="content">
+              <table class="table is-fullwidth is-bordered">
+                <thead>
+                  <tr><th>Goal</th><th>Status</th><th>Notes</th></tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>2D/3D Mesh Simulator</strong></td>
+                    <td><span class="tag-done">✓ Done</span></td>
+                    <td>Full 3D (x,y,z) per instructor feedback; z evolves with temperature</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Coupled Deformation</strong></td>
+                    <td><span class="tag-done">✓ Done</span></td>
+                    <td>Geometry updates feed back into conductance each timestep</td>
+                  </tr>
+                  <tr>
+                    <td><strong>OpenMP Parallelization</strong></td>
+                    <td><span class="tag-done">✓ Done</span></td>
+                    <td>Static + dynamic scheduling; up to 16 threads supported</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Initial Speedup Measurements</strong></td>
+                    <td><span class="tag-done">✓ Done</span></td>
+                    <td>8× at 8 threads (uniform), 6.2× (hotspot) on development machine</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Full GHC Benchmark Suite</strong></td>
+                    <td><span class="tag-wip">⟳ Next</span></td>
+                    <td>500×500 meshes, 1–16 threads on GHC machines — April 22–25</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Load Balance Analysis</strong></td>
+                    <td><span class="tag-wip">⟳ Next</span></td>
+                    <td>Per-thread timing, static vs. dynamic comparison — April 18–21</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Enhanced Visualization</strong></td>
+                    <td><span class="tag-wip">⟳ Next</span></td>
+                    <td>Animated heatmaps, performance dashboards — April 26–28</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- Concerns -->
+    <!-- ================================================================== -->
+    <section class="section hero is-light" id="concerns">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered">
+            <div class="column is-four-fifths">
+              <h2 class="title is-3 has-text-centered">Concerns &amp; Open Questions</h2>
+              <div class="content">
+
+                <div class="callout callout-warning">
+                  <strong>Load imbalance at higher thread counts:</strong> Parallel efficiency drops
+                  from ~95% at 4 threads to ~81% at 8 threads for uniform loads, suggesting
+                  synchronization overhead or false sharing. We plan to profile with hardware counters
+                  and try cache-line-aligned data layouts.
+                </div>
+
+                <div class="callout callout-warning">
+                  <strong>Scalability to large meshes:</strong> We have not yet run experiments on
+                  500×500 meshes. Time per timestep will be ~25× larger; memory bandwidth may become
+                  a bottleneck when the mesh no longer fits in L2 cache. GHC machines will clarify this.
+                </div>
+
+                <div class="callout callout-info">
+                  <strong>Dynamic scheduling:</strong> We expect dynamic scheduling to outperform static
+                  for hotspot-4 (where some cells do much more work due to large temperature gradients)
+                  but underperform for uniform loads. We will compare both experimentally.
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================== -->
+    <!-- Poster Plan -->
+    <!-- ================================================================== -->
+    <section class="section" id="poster">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3 has-text-centered">Poster Session Plan</h2>
+            <div class="content">
+              <p>At the May 1 poster session (15-418 slot: 8:30–11:30am) we plan to show:</p>
+              <ol>
+                <li><strong>Live demo:</strong> Run the simulator on a GHC machine; show temperature values propagating across threads and print the final heatmap to the console.</li>
+                <li><strong>Speedup graphs:</strong> Speedup vs. thread count for 100×100 and 500×500 meshes under uniform and hotspot-4 patterns.</li>
+                <li><strong>Heatmap visualizations:</strong> Temperature and z-displacement grids for hotspot-4, showing the 3D buckling effect.</li>
+                <li><strong>Load balance analysis:</strong> Per-thread execution time distribution for static vs. dynamic scheduling under non-uniform workloads.</li>
+                <li><strong>Overhead of dynamics:</strong> Runtime comparison of static mesh (no geometry update) vs. dynamic mesh (with 3D deformation) to quantify the cost of thermomechanical coupling.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer project-footer">
+      <div class="content has-text-centered">
+        <p>
+          <a href="https://alanwang8.github.io/15418-final-project/">https://alanwang8.github.io/15418-final-project/</a>
+          · CMU 15-418/15-618 · Spring 2026 · Alan Wang &amp; Allison Chen
+        </p>
+      </div>
+    </footer>
+
+  </body>
+</html>
