@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="style.css" />
     <style>
       .result-figure { margin: 1.5rem 0; }
-      .result-figure img, .result-figure object { width: 100%; border-radius: 6px;
+      .result-figure img { width: 100%; height: auto; display: block; border-radius: 6px;
         box-shadow: 0 4px 16px rgba(42,111,127,0.13); border: 1px solid rgba(42,111,127,0.12); }
       .result-figure figcaption { margin-top: 0.6rem; font-size: 0.88rem; color: #4a5560;
         text-align: center; line-height: 1.4; }
@@ -256,28 +256,28 @@
 
                 <div class="result-grid">
                   <figure class="result-figure">
-                    <object data="assets/results/heatmap_hotspot1_T.svg" type="image/svg+xml"></object>
+                    <img src="assets/results/heatmap_hotspot1_T.svg" alt="Temperature distribution hotspot-1" />
                     <figcaption>
                       <strong>Fig 1.</strong> Temperature distribution — hotspot-1 pattern, 100×100 mesh,
                       200 steps. Hot = yellow/white, cool = black/red.
                     </figcaption>
                   </figure>
                   <figure class="result-figure">
-                    <object data="assets/results/heatmap_hotspot1_z.svg" type="image/svg+xml"></object>
+                    <img src="assets/results/heatmap_hotspot1_z.svg" alt="3D buckling displacement hotspot-1" />
                     <figcaption>
                       <strong>Fig 2.</strong> 3D buckling displacement — same run.
                       Red = upward (hot cells), blue = near zero (cool boundary cells).
                     </figcaption>
                   </figure>
                   <figure class="result-figure">
-                    <object data="assets/results/heatmap_hotspot4_T.svg" type="image/svg+xml"></object>
+                    <img src="assets/results/heatmap_hotspot4_T.svg" alt="Temperature distribution hotspot-4" />
                     <figcaption>
                       <strong>Fig 3.</strong> Temperature — hotspot-4 pattern (four ALU clusters).
                       Models a realistic multicore chip floorplan.
                     </figcaption>
                   </figure>
                   <figure class="result-figure">
-                    <object data="assets/results/heatmap_hotspot4_z.svg" type="image/svg+xml"></object>
+                    <img src="assets/results/heatmap_hotspot4_z.svg" alt="3D buckling displacement hotspot-4" />
                     <figcaption>
                       <strong>Fig 4.</strong> 3D buckling — hotspot-4 pattern. Four localized
                       displacement peaks correspond to the four ALU hotspots.
@@ -316,14 +316,14 @@
 
                 <div class="result-grid">
                   <figure class="result-figure">
-                    <object data="assets/results/speedup_100x100_static.svg" type="image/svg+xml"></object>
+                    <img src="assets/results/speedup_100x100_static.svg" alt="Speedup vs thread count" />
                     <figcaption>
                       <strong>Fig 5.</strong> Speedup vs. thread count — 100×100 mesh, static scheduling.
                       Dashed line = ideal linear speedup.
                     </figcaption>
                   </figure>
                   <figure class="result-figure">
-                    <object data="assets/results/time_breakdown_100x100.svg" type="image/svg+xml"></object>
+                    <img src="assets/results/time_breakdown_100x100.svg" alt="Time breakdown thermal vs geometry" />
                     <figcaption>
                       <strong>Fig 6.</strong> Time breakdown: thermal update vs. geometry update.
                       Thermal dominates (~93%); geometry overhead is lightweight.
