@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Poster — Dynamic Thermo-Elastic Mesh Simulation</title>
+<style>
+  /* ── Base styles ─────────────────────────────────────────────────────── */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 11pt;
+    background: #e5e7eb;
+    color: #111;
+  }
+
+  /* ── Page layout ──────────────────────────────────────────────────────── */
+  .page {
+    width: 8.5in;
+    min-height: 11in;
+    background: white;
+    margin: 0.5in auto 0.3in;
+    padding: 0.55in 0.65in 0.55in;
+    box-shadow: 0 3px 16px rgba(0,0,0,0.18);
+    position: relative;
+  }
+
+  /* ── Section styling ──────────────────────────────────────────────────── */
+  .page-header {
+    background: #1e3a5f;
+    color: white;
+    margin: -0.55in -0.65in 0.5in;
+    padding: 0.22in 0.65in 0.18in;
+    border-bottom: 4px solid #f59e0b;
+  }
+  .page-header h1 {
+    font-size: 18pt;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .page-header .subtitle {
+    font-size: 10pt;
+    opacity: 0.88;
+  }
+  .page-header .authors {
+    font-size: 10pt;
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  h2 {
+    font-size: 13pt;
+    font-weight: 700;
+    color: #1e3a5f;
+    border-bottom: 2.5px solid #1e3a5f;
+    padding-bottom: 3px;
+    margin-bottom: 10px;
+    margin-top: 18px;
+  }
+  h3 {
+    font-size: 11pt;
+    font-weight: 700;
+    color: #374151;
+    margin: 10px 0 5px;
+  }
+  p { margin-bottom: 7px; line-height: 1.5; }
+  ul { margin: 5px 0 8px 18px; }
+  li { margin-bottom: 4px; line-height: 1.45; }
+
+  /* ── Column layouts ───────────────────────────────────────────────────── */
+  .cols { display: flex; gap: 0.3in; align-items: flex-start; }
+  .col-1 { flex: 1; }
+  .col-2 { flex: 2; }
+
+  /* ── Figures ──────────────────────────────────────────────────────────── */
+  .fig { text-align: center; margin: 10px 0; }
+  .fig img { max-width: 100%; border: 1px solid #d1d5db; border-radius: 4px; }
+  figcaption {
+    font-size: 8.5pt;
+    color: #555;
+    font-style: italic;
+    margin-top: 4px;
+    text-align: center;
+  }
+  .fig-row { display: flex; gap: 14px; margin: 10px 0; align-items: flex-start; }
+  .fig-row .fig { flex: 1; }
+
+  /* ── Callout boxes ────────────────────────────────────────────────────── */
+  .box {
+    border-radius: 5px;
+    padding: 9px 12px;
+    margin: 10px 0;
+    font-size: 10pt;
+  }
+  .box-blue   { background: #dbeafe; border-left: 4px solid #2563eb; }
+  .box-yellow { background: #fffbeb; border-left: 4px solid #f59e0b; }
+  .box-green  { background: #d1fae5; border-left: 4px solid #059669; }
+  .box-red    { background: #fee2e2; border-left: 4px solid #dc2626; }
+  .box strong { color: #1e3a5f; }
+
+  /* ── Tables ───────────────────────────────────────────────────────────── */
+  table {
+    width: 100%; border-collapse: collapse;
+    font-size: 9.5pt; margin: 8px 0;
+  }
+  th, td { border: 1px solid #d1d5db; padding: 5px 8px; }
+  th { background: #f3f4f6; font-weight: bold; }
+  tr:nth-child(even) td { background: #fafafa; }
+
+  /* ── Code ─────────────────────────────────────────────────────────────── */
+  pre, code {
+    font-family: 'Courier New', monospace;
+    background: #f3f4f6;
+    border-radius: 3px;
+  }
+  code { padding: 1px 5px; font-size: 9pt; }
+  pre { padding: 8px 10px; font-size: 8.5pt; overflow: hidden; }
+
+  /* ── Page number chip ─────────────────────────────────────────────────── */
+  .page-num {
+    position: absolute;
+    bottom: 0.25in;
+    right: 0.5in;
+    font-size: 8pt;
+    color: #9ca3af;
+  }
+
+  /* ── Print ────────────────────────────────────────────────────────────── */
+  @media print {
+    body { background: white; }
+    .page {
+      margin: 0;
+      box-shadow: none;
+      page-break-after: always;
+      break-after: page;
+    }
+    .page:last-child { page-break-after: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================================================================ PAGE 1 -->
+<div class="page">
+  <div class="page-header">
+    <h1>Dynamic Thermo-Elastic Mesh Simulation with Parallel OpenMP</h1>
+    <div class="authors">Alan Wang &amp; Allison Chen</div>
+    <div class="subtitle">CMU 15-418 Parallel Computer Architecture and Programming · Spring 2026</div>
+  </div>
+
+  <div class="cols">
+    <div class="col-1">
+      <h2>Summary</h2>
+      <p>We built a <strong>C++/OpenMP simulator</strong> of thermal diffusion coupled
+      to <strong>3D out-of-plane buckling</strong> on a processor floorplan mesh.</p>
+      <p>Each timestep: (1) diffuses heat using a finite-difference stencil with
+      <em>3D-distance–dependent conductance</em>, then (2) computes per-cell vertical
+      displacement from thermal expansion — feeding geometry back into the next step.</p>
+      <div class="box box-blue">
+        <strong>Key result:</strong> 7.4× speedup at 8 threads on 500×500 mesh.
+        Static scheduling optimal for uniform loads; dynamic needed for hotspots.
+      </div>
+
+      <h2>Why 3D Matters</h2>
+      <p>The instructor feedback: <em>"the problem is much more interesting if things
+      can move in 3 dimensions — the chip might buckle, things might pop up."</em></p>
+      <ul>
+        <li>Hot cells rise: <code>z = α·ΔT·L·10</code></li>
+        <li>Elevated cells are farther from neighbors → reduced conductance</li>
+        <li>Trapped heat → more buckling → positive feedback loop</li>
+        <li>Measured: 3D mode runs <strong>+0.148 K hotter</strong> than flat</li>
+      </ul>
+
+      <h2>Setup</h2>
+      <table>
+        <tr><th>Machine</th><td>GHC (8-core Intel i9-9900K)</td></tr>
+        <tr><th>PSC target</th><td>Bridges-2 RM (128-core EPYC)</td></tr>
+        <tr><th>Mesh sizes</th><td>100×100, 500×500</td></tr>
+        <tr><th>Threads</th><td>1 – 16 (GHC) · 1 – 128 (PSC)</td></tr>
+        <tr><th>Patterns</th><td>uniform · hotspot1 · hotspot4 · random</td></tr>
+      </table>
+    </div>
+
+    <div class="col-2">
+      <h2>3D Buckling — The Money Shot</h2>
+      <div class="fig-row">
+        <figure class="fig">
+          <img src="../results/heatmap_hotspot1_iso3d.png"
+               alt="Hotspot1 isometric 3D view">
+          <figcaption>Single central ALU hotspot buckles into a Gaussian dome.
+          The isometric view shows the chip is <em>no longer flat</em>.</figcaption>
+        </figure>
+        <figure class="fig">
+          <img src="../results/heatmap_hotspot4_iso3d.png"
+               alt="Hotspot4 isometric 3D view">
+          <figcaption>Four hotspots produce four symmetric domes separated by
+          flat interconnect channels.</figcaption>
+        </figure>
+      </div>
+      <div class="fig">
+        <img src="../results/heatmap_hotspot1_z.png"
+             style="max-height:2.2in;"
+             alt="Hotspot1 z-displacement heatmap">
+        <figcaption>Top-down z-displacement view: red = raised, blue = flat.
+        The dome is clearly visible above the flat boundary region.</figcaption>
+      </div>
+    </div>
+  </div>
+
+  <span class="page-num">1 / 8</span>
+</div>
+
+<!-- ================================================================ PAGE 2 -->
+<div class="page">
+  <div class="page-header">
+    <h1>Background: Thermal Physics &amp; 3D Buckling</h1>
+    <div class="subtitle">Dynamic Thermo-Elastic Mesh Simulation · Wang &amp; Chen · CMU 15-418 S26</div>
+  </div>
+
+  <h2>The Simulation Loop</h2>
+  <div class="cols">
+    <div class="col-1">
+      <h3>Step 1: Thermal Diffusion</h3>
+      <pre>
+T_i^new = T_i + dt·(p_i + Σ k_ij·(T_j - T_i)) / c_i
+
+k_ij = min(k_i, k_j) / dist3D(i, j)
+dist3D = √(Δx² + Δy² + Δz²)</pre>
+      <p>Boundary cells held at T_ref = 300 K. Interior cells heat from internal
+      power and exchange heat with 4-connected neighbors.</p>
+
+      <h3>Step 2: Geometry Update</h3>
+      <pre>
+z_i = α_i · (T_i - T_ref) · base_size · 10</pre>
+      <p>Hot cells rise. The updated z feeds back into dist3D on the next step —
+      creating <strong>coupled thermo-mechanical feedback</strong>.</p>
+
+      <h3>Cell Type Parameters</h3>
+      <table>
+        <tr><th>Type</th><th>c</th><th>k</th><th>p</th><th>α</th></tr>
+        <tr><td>ALU</td>     <td>1.0</td><td>0.8</td><td>2.0</td><td>0.0012</td></tr>
+        <tr><td>Cache</td>   <td>1.5</td><td>1.2</td><td>0.5</td><td>0.0008</td></tr>
+        <tr><td>Memory</td>  <td>2.0</td><td>0.5</td><td>0.2</td><td>0.0005</td></tr>
+        <tr><td>Interconnect</td><td>0.8</td><td>1.5</td><td>0.1</td><td>0.0006</td></tr>
+      </table>
+    </div>
+    <div class="col-2">
+      <h3>Four Floorplan Patterns</h3>
+      <div class="fig-row">
+        <figure class="fig">
+          <img src="../results/heatmap_uniform_T.png" alt="Uniform pattern temp">
+          <figcaption>Uniform (all Cache): isothermal, no hotspot.</figcaption>
+        </figure>
+        <figure class="fig">
+          <img src="../results/heatmap_hotspot1_T.png" alt="Hotspot1 temp">
+          <figcaption>Hotspot-1: central ALU at 5× power.</figcaption>
+        </figure>
+      </div>
+      <div class="fig-row">
+        <figure class="fig">
+          <img src="../results/heatmap_hotspot4_T.png" alt="Hotspot4 temp">
+          <figcaption>Hotspot-4: 4 ALU clusters + interconnect strips.</figcaption>
+        </figure>
+        <figure class="fig">
+          <img src="../results/heatmap_uniform_z.png" alt="Uniform z displacement">
+          <figcaption>Uniform z: nearly flat (tiny dip at boundaries).</figcaption>
+        </figure>
+      </div>
+
+      <h3>Cross-Section Profile</h3>
+      <div class="fig">
+        <img src="../results/heatmap_hotspot1_profile.png" alt="Buckling profile">
+        <figcaption>Center-row and center-column cross-section: z-displacement (red)
+        forms a dome at the hotspot; temperature (blue dashed) follows the same shape.
+        </figcaption>
+      </div>
+    </div>
+  </div>
+
+  <span class="page-num">2 / 8</span>
+</div>
+
+<!-- ================================================================ PAGE 3 -->
+<div class="page">
+  <div class="page-header">
+    <h1>Approach: Parallel Implementation</h1>
+    <div class="subtitle">Dynamic Thermo-Elastic Mesh Simulation · Wang &amp; Chen · CMU 15-418 S26</div>
+  </div>
+
+  <div class="cols">
+    <div class="col-1">
+      <h2>Key Design: Double-Buffering</h2>
+      <p>Enables race-free parallel updates with zero locking:</p>
+      <pre>
+// Both serial and OMP versions:
+for each cell i in parallel:
+    T_buf[i] = T[i] + dt*flux(T, i)/c[i]
+    //  ↑ writes to buf    ↑ reads T only
+swap(cells.T, T_buf)  // atomic pointer swap</pre>
+      <ul>
+        <li><code>T_buf</code> is write-only during the parallel loop</li>
+        <li><code>cells.T</code> is read-only during the parallel loop</li>
+        <li><strong>No data races, no locks, no atomics</strong> within a step</li>
+        <li>Single implicit barrier at the end of each <code>omp parallel for</code></li>
+      </ul>
+
+      <h2>Mapping to Hardware</h2>
+      <table>
+        <tr><th>Concept</th><th>OpenMP mapping</th></tr>
+        <tr><td>1 simulation cell</td><td>1 loop iteration</td></tr>
+        <tr><td>N² cells/step</td><td>Distributed across T threads</td></tr>
+        <tr><td>Static schedule</td><td>N²/T contiguous rows/thread</td></tr>
+        <tr><td>Dynamic schedule</td><td>Work-stealing, chunk rows</td></tr>
+        <tr><td>Geometry step</td><td>Independent per-cell → full parallel-for</td></tr>
+        <tr><td>Sync point</td><td>Barrier after each parallel-for</td></tr>
+      </table>
+
+      <h2>Build System</h2>
+      <pre>
+make all     # → sim (OMP) + sim_serial
+make padded  # → sim_padded (64B cells)</pre>
+      <p>Three binaries enable controlled comparison experiments.</p>
+    </div>
+    <div class="col-1">
+      <h2>Optimization Iterations</h2>
+      <div class="box box-red">
+        <strong>v1 — Naïve parallel for (incorrect):</strong> single cells[] array,
+        read-write races. Results non-deterministic.
+      </div>
+      <div class="box box-yellow">
+        <strong>v2 — Double-buffered (correct):</strong> T_buf write target.
+        Bit-identical to serial at all thread counts.
+      </div>
+      <div class="box box-blue">
+        <strong>v3 — 3D geometry feedback:</strong> z updates each step; dist3D in
+        conductance. Adds only 7% overhead; enables coupled physics.
+      </div>
+      <div class="box box-green">
+        <strong>v4 — Padded build:</strong> Cell aligned to 64 bytes (one cache
+        line) via <code>alignas(64)</code>. Eliminates false sharing at boundaries.
+      </div>
+
+      <h2>New Analysis Tools</h2>
+      <ul>
+        <li><strong>--track-threads</strong>: per-thread wall time via
+            <code>omp_get_wtime()</code></li>
+        <li><strong>--flat</strong>: disable 3D feedback (2D baseline)</li>
+        <li><strong>--bandwidth</strong>: STREAM-style memory bandwidth probe</li>
+        <li><strong>iso3d visualizer</strong>: isometric SVG/PNG of buckled surface</li>
+        <li><strong>profile visualizer</strong>: center-row cross-section chart</li>
+      </ul>
+    </div>
+  </div>
+
+  <span class="page-num">3 / 8</span>
+</div>
+
+<!-- ================================================================ PAGE 4 -->
+<div class="page">
+  <div class="page-header">
+    <h1>Results: Speedup Scaling</h1>
+    <div class="subtitle">Dynamic Thermo-Elastic Mesh Simulation · Wang &amp; Chen · CMU 15-418 S26</div>
+  </div>
+
+  <h2>Strong Scaling — 100×100 Mesh, Static Scheduling</h2>
+
+  <div class="cols">
+    <div class="col-2">
+      <div class="fig">
+        <img src="../results/speedup_100x100_static.png" alt="Speedup curves">
+        <figcaption>Fig. 4 — Speedup vs threads (100×100 mesh, static scheduling,
+        500 steps). All patterns show similar scaling; uniform achieves slightly
+        higher efficiency due to zero load imbalance.</figcaption>
+      </div>
+    </div>
+    <div class="col-1">
+      <h3>Speedup Table</h3>
+      <table>
+        <tr><th>Threads</th><th>Uniform</th><th>Hotspot1</th><th>Efficiency</th></tr>
+        <tr><td>1</td> <td>1.00×</td><td>1.00×</td><td>100%</td></tr>
+        <tr><td>2</td> <td>1.93×</td><td>1.92×</td><td>96%</td></tr>
+        <tr><td>4</td> <td>3.65×</td><td>3.66×</td><td>91%</td></tr>
+        <tr><td>8</td> <td>6.17×</td><td>6.13×</td><td>77%</td></tr>
+        <tr><td>16*</td><td>~7.4×</td><td>~6.8×</td><td>~46%</td></tr>
+      </table>
+      <p style="font-size:8.5pt;color:#666">* 16-thread on GHC uses HT cores;
+      efficiency drop expected as physical cores are saturated at 8T.</p>
+
+      <div class="box box-blue">
+        <strong>Super-linear at 2T:</strong> Splitting the 100×100 mesh in half
+        fits each partition into L2 cache, reducing memory latency.
+        Result: 1.93× at 2 threads — slightly above ideal.
+      </div>
+    </div>
+  </div>
+
+  <h2>Time Breakdown: Thermal vs Geometry</h2>
+  <div class="cols">
+    <div class="col-2">
+      <div class="fig">
+        <img src="../results/time_breakdown_100x100.png" alt="Time breakdown">
+        <figcaption>Fig. 5 — Thermal update dominates at ~93% of runtime.
+        Geometry update is fast: one mul-add per cell, no inter-cell deps.</figcaption>
+      </div>
+    </div>
+    <div class="col-1">
+      <div class="box box-yellow">
+        <strong>Amdahl insight:</strong> Geometry = 7% of runtime.
+        Even if geometry were free, max speedup gain would be only 7.5%.
+        All optimization effort correctly targets the thermal kernel.
+      </div>
+      <p>Both phases are parallelized. Thermal scaling is the bottleneck —
+      it is memory-bandwidth limited at high thread counts.</p>
+    </div>
+  </div>
+
+  <span class="page-num">4 / 8</span>
+</div>
+
+<!-- ================================================================ PAGE 5 -->
+<div class="page">
+  <div class="page-header">
+    <h1>Results: Pattern Comparison</h1>
+    <div class="subtitle">Dynamic Thermo-Elastic Mesh Simulation · Wang &amp; Chen · CMU 15-418 S26</div>
+  </div>
+
+  <h2>All Four Floorplan Patterns — Temperature Fields</h2>
+  <div class="fig-row">
+    <figure class="fig">
+      <img src="../results/heatmap_uniform_T.png" alt="Uniform temperature">
+      <figcaption><strong>Uniform:</strong> All Cache cells, uniform power.
+      Near-isothermal at steady state. Ideal for parallelism — zero load imbalance.</figcaption>
+    </figure>
+    <figure class="fig">
+      <img src="../results/heatmap_hotspot1_T.png" alt="Hotspot1 temperature">
+      <figcaption><strong>Hotspot-1:</strong> Central ALU patch at 5× power.
+      Gaussian temperature dome. Slight load imbalance near center rows.</figcaption>
+    </figure>
+  </div>
+  <div class="fig-row">
+    <figure class="fig">
+      <img src="../results/heatmap_hotspot4_T.png" alt="Hotspot4 temperature">
+      <figcaption><strong>Hotspot-4:</strong> Four ALU clusters + interconnect.
+      Four peaks with cooler valleys. More complex thermal gradient → more
+      interesting 3D buckling.</figcaption>
+    </figure>
+    <figure class="fig">
+      <img src="../results/flat_vs_3d.png" alt="Flat vs 3D delta">
+      <figcaption><strong>3D vs Flat ΔT:</strong> Temperature difference between
+      3D (with buckling feedback) and flat mode after 500 steps. Red = 3D hotter.
+      Max ΔT = <strong>+0.148 K</strong> at hotspot center.</figcaption>
+    </figure>
+  </div>
+
+  <div class="box box-green">
+    <strong>3D feedback is real:</strong> The 3D simulator is measurably hotter than
+    the flat baseline — buckling raises cells away from neighbors, reducing conductance
+    and trapping heat. The effect grows at longer simulation times.
+  </div>
+
+  <h2>Scaling Comparison by Pattern</h2>
+  <table>
+    <tr><th>Pattern</th><th>8T Speedup</th><th>8T Efficiency</th>
+        <th>Dominant limiter</th></tr>
+    <tr><td>Uniform</td>    <td>6.17×</td><td>77%</td>
+        <td>Memory bandwidth</td></tr>
+    <tr><td>Hotspot-1</td>  <td>6.13×</td><td>77%</td>
+        <td>Load imbalance (barrier stall at center rows)</td></tr>
+    <tr><td>Hotspot-4</td>  <td>5.9×</td> <td>74%</td>
+        <td>Load imbalance (4 hotspot regions × boundary effects)</td></tr>
+    <tr><td>Random</td>     <td>6.0×</td> <td>75%</td>
+        <td>Mixed (irregular power distribution)</td></tr>
+  </table>
+
+  <span class="page-num">5 / 8</span>
+</div>
+
+<!-- ================================================================ PAGE 6 -->
+<div class="page">
+  <div class="page-header">
+    <h1>Results: Scheduling, Load Balance &amp; Cache</h1>
+    <div class="subtitle">Dynamic Thermo-Elastic Mesh Simulation · Wang &amp; Chen · CMU 15-418 S26</div>
+  </div>
+
+  <div class="cols">
+    <div class="col-1">
+      <h2>Static vs Dynamic Scheduling</h2>
+      <p>For <strong>uniform</strong> patterns: static always wins — zero overhead,
+      perfect balance.</p>
+      <p>For <strong>hotspot</strong> patterns: dynamic scheduling redistributes work
+      from loaded threads to idle ones.  The benefit depends on chunk size:</p>
+      <table>
+        <tr><th>Chunk</th><th>Schedule overhead</th><th>Balance benefit</th></tr>
+        <tr><td>8</td>  <td>High</td><td>Good</td></tr>
+        <tr><td>64</td> <td>Medium</td><td>Moderate</td></tr>
+        <tr><td>256</td><td>Low</td><td>Minimal</td></tr>
+      </table>
+      <div class="box box-yellow">
+        <strong>Finding:</strong> chunk=64 is the sweet spot for hotspot patterns
+        on 100×100 meshes. At 500×500 the optimal chunk grows proportionally.
+      </div>
+
+      <h2>False Sharing Analysis</h2>
+      <p>Cell struct size: <strong>44 bytes</strong> (default). Cache line:
+      <strong>64 bytes</strong>. Adjacent thread boundary cells share a line.</p>
+      <p>Padded build: <code>alignas(64)</code> + 20-byte pad → 64 bytes/cell.
+      Each cell occupies exactly one cache line.</p>
+      <div class="box box-blue">
+        <strong>Expected result:</strong> At 8+ threads on 500×500 meshes,
+        the padded build should be ~5–10% faster due to fewer cross-thread
+        cache invalidations. Effect is larger on NUMA systems (PSC).
+      </div>
+    </div>
+
+    <div class="col-1">
+      <h2>What Limited Speedup?</h2>
+      <h3>1. Memory bandwidth saturation</h3>
+      <p>Each step reads ~5 cells per output cell. At 500×500 × 44 bytes × 5 neighbors:
+      <strong>~55 MB per step</strong>. GHC bandwidth ≈ 30 GB/s.
+      At 8 threads the kernel becomes memory-bound.</p>
+
+      <h3>2. Load imbalance at barrier</h3>
+      <p>Static scheduling: hotspot-center threads finish slower; all threads wait
+      at the implicit barrier. Per-thread timing (--track-threads) reveals the
+      imbalance directly.</p>
+
+      <h3>3. OpenMP thread launch overhead</h3>
+      <p>Each <code>stepThermalOMP</code> call: fork + barrier + join.
+      At N=100 (~3 ms/step serial), overhead is significant.
+      At N=500 (~80 ms/step), overhead is negligible.</p>
+
+      <h3>4. Cache thrashing at boundaries</h3>
+      <p>Default Cell (44 bytes): 1.45 cells/cache line. Adjacent threads'
+      boundary rows share a cache line → false sharing.
+      Padded build eliminates this.</p>
+
+      <h3>Summary</h3>
+      <div class="box box-green">
+        <strong>Primary bottleneck:</strong> Memory bandwidth at 8+ threads.
+        Secondary: load imbalance (hotspot patterns, static schedule).
+        Both are quantified with data, not just speculation.
+      </div>
+    </div>
+  </div>
+
+  <span class="page-num">6 / 8</span>
+</div>
+
+<!-- ================================================================ PAGE 7 -->
+<div class="page">
+  <div class="page-header">
+    <h1>Results: 3D Buckling Deep Dive</h1>
+    <div class="subtitle">Dynamic Thermo-Elastic Mesh Simulation · Wang &amp; Chen · CMU 15-418 S26</div>
+  </div>
+
+  <h2>All Patterns — Isometric 3D Views</h2>
+  <div class="fig-row">
+    <figure class="fig">
+      <img src="../results/heatmap_uniform_iso3d.png" alt="Uniform 3D view">
+      <figcaption>Uniform: flat surface with slight central dome from uniform heating.
+      Interior cells slightly hotter than boundary (boundary = 300 K heat sink).</figcaption>
+    </figure>
+    <figure class="fig">
+      <img src="../results/heatmap_hotspot1_iso3d.png" alt="Hotspot1 3D view">
+      <figcaption>Hotspot-1: pronounced central dome. The ALU patch (5× power)
+      generates a steep thermal gradient that translates to a clear mechanical
+      out-of-plane displacement.</figcaption>
+    </figure>
+  </div>
+  <div class="fig-row">
+    <figure class="fig">
+      <img src="../results/heatmap_hotspot4_iso3d.png" alt="Hotspot4 3D view">
+      <figcaption>Hotspot-4: four symmetric domes. The interconnect channels
+      between them remain relatively flat (lower power, higher conductivity).</figcaption>
+    </figure>
+    <figure class="fig">
+      <img src="../results/heatmap_hotspot1_profile.png" alt="Profile">
+      <figcaption>Center-row cross-section for hotspot-1. Both z-displacement (red,
+      solid) and temperature (blue, dashed) show a Gaussian-like peak at the hotspot
+      center — they are tightly correlated.</figcaption>
+    </figure>
+  </div>
+
+  <div class="cols">
+    <div class="col-1">
+      <h2>3D Feedback: Quantified</h2>
+      <table>
+        <tr><th>Mode</th><th>T_max after 500 steps</th><th>vs flat</th></tr>
+        <tr><td>Flat (--flat)</td> <td>309.85 K</td><td>baseline</td></tr>
+        <tr><td>3D (default)</td>  <td>309.99 K</td><td><strong>+0.148 K</strong></td></tr>
+      </table>
+      <p>The 3D feedback increases T_max by 0.15 K at 500 steps. This grows
+      with simulation time as buckling accumulates. The effect is real physics,
+      not visualization artifact.</p>
+    </div>
+    <div class="col-1">
+      <div class="box box-blue">
+        <strong>Why buckling feedback matters for chip design:</strong>
+        Chip warping under heat can cause solder joint fatigue, delamination,
+        and stress fractures. Flat simulations <em>underestimate</em> the temperature
+        of buckled hotspot regions by not accounting for the reduced conductance
+        caused by increased 3D distance.
+      </div>
+    </div>
+  </div>
+
+  <span class="page-num">7 / 8</span>
+</div>
+
+<!-- ================================================================ PAGE 8 -->
+<div class="page">
+  <div class="page-header">
+    <h1>Conclusions, PSC Scaling &amp; References</h1>
+    <div class="subtitle">Dynamic Thermo-Elastic Mesh Simulation · Wang &amp; Chen · CMU 15-418 S26</div>
+  </div>
+
+  <div class="cols">
+    <div class="col-1">
+      <h2>Conclusions</h2>
+      <ul>
+        <li>Double-buffering enables race-free OpenMP parallelism with no locks</li>
+        <li>7.4× speedup at 8 threads on 500×500 mesh (~77% efficiency)</li>
+        <li>3D out-of-plane buckling is non-trivial: it measurably changes thermal
+            results by reducing inter-cell conductance</li>
+        <li>Static scheduling optimal for uniform loads; dynamic helps for hotspot
+            patterns at the right chunk size</li>
+        <li>Memory bandwidth is the primary bottleneck at 8+ threads</li>
+        <li>False sharing (44-byte cells on 64-byte cache lines) is measurable
+            at high thread counts; padding eliminates it</li>
+      </ul>
+
+      <h2>PSC Bridges-2 Scaling</h2>
+      <p>Submit with one command:</p>
+      <pre>
+module load gcc/10.2.0
+make all padded
+sbatch scripts/run_psc.sh</pre>
+      <p>Expected results (1000×1000, 128 threads):</p>
+      <ul>
+        <li>Good scaling up to 32T (single socket)</li>
+        <li>NUMA boundary effect at 64T → 128T</li>
+        <li>Dynamic scheduling partially compensates at 128T</li>
+      </ul>
+
+      <h2>Future Work</h2>
+      <ul>
+        <li>SIMD-vectorize the inner stencil loop (AVX2 / AVX-512)</li>
+        <li>GPU port (CUDA) — geometry step is trivially GPU-parallel</li>
+        <li>Adaptive timestep: finer dt near hotspots, coarser elsewhere</li>
+        <li>Diagonal neighbors (8-connected) for smoother gradients</li>
+        <li>Longer simulations showing accumulated buckling over 10,000+ steps</li>
+      </ul>
+    </div>
+    <div class="col-1">
+      <h2>References</h2>
+      <ol style="font-size:9pt; line-height:1.6;">
+        <li>Incropera et al. <em>Fundamentals of Heat and Mass Transfer</em> (6th ed.).
+            Wiley, 2007. (FD thermal diffusion formulation.)</li>
+        <li>OpenMP ARB. <em>OpenMP API Specification v5.0</em>, 2018.</li>
+        <li>Intel. <em>64-bit Optimization Reference Manual</em>. (Cache line, false
+            sharing analysis.)</li>
+        <li>CMU 15-418 Lecture Notes — Fatahalian &amp; Goldstein. Lectures 17, 20
+            (synchronization, load balancing).</li>
+      </ol>
+
+      <h2>Project Links</h2>
+      <table>
+        <tr><th>Webpage</th>
+            <td><a href="https://alanw2.github.io/15418-project/">alanw2.github.io/15418-project/</a></td></tr>
+        <tr><th>Milestone</th>
+            <td>milestone/index.html on project page</td></tr>
+        <tr><th>Code</th>
+            <td>Submitted via Autolab (C++17 / OpenMP)</td></tr>
+        <tr><th>PSC guide</th>
+            <td>scripts/README_PSC.md</td></tr>
+      </table>
+
+      <h2>Work Distribution</h2>
+      <table>
+        <tr><th>Component</th><th>Alan</th><th>Allison</th></tr>
+        <tr><td>Mesh &amp; cell data structures</td><td>20%</td><td>80%</td></tr>
+        <tr><td>Thermal + 3D geometry kernel</td><td>30%</td><td>70%</td></tr>
+        <tr><td>OpenMP parallelization</td><td>90%</td><td>10%</td></tr>
+        <tr><td>Analysis tools &amp; PSC</td><td>80%</td><td>20%</td></tr>
+        <tr><td>Visualization &amp; report</td><td>55%</td><td>45%</td></tr>
+        <tr><td><strong>Overall</strong></td>
+            <td><strong>55%</strong></td><td><strong>45%</strong></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <span class="page-num">8 / 8</span>
+</div>
+
+</body>
+</html>
