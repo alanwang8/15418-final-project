@@ -78,6 +78,7 @@ int main(int argc, char* argv[]) {
         else if (arg == "--output")        output_file  = nextArg();
         else if (arg == "--heatmap")       heatmap_file = nextArg();
         else if (arg == "--seed")          seed         = (unsigned)std::stoul(nextArg());
+        else if (arg == "--cond-interval")  { nextArg(); /* parsed but unused */ }
         else if (arg == "--verbose")       verbose      = true;
         else if (arg == "--help" || arg == "-h") { printUsage(argv[0]); return 0; }
         else { std::cerr << "Unknown argument: " << arg << "\n"; printUsage(argv[0]); return 1; }
@@ -101,7 +102,7 @@ int main(int argc, char* argv[]) {
 #endif
     }
 
-    Mesh mesh(R, C, 1.0f);
+    Mesh mesh(R, C, 1.0f, nthreads);
     mesh.initFloorplan(pattern, seed);
 
     SimConfig cfg;

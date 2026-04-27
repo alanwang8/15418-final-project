@@ -20,6 +20,7 @@ struct SimConfig {
     int    stats_interval   = 0;     // dump stats every N steps (0 = only at end)
     bool   flat_mode   = false;      // if true, skip geometry update (z stays 0; 2D-only conductance)
     bool   track_threads = false;    // collect per-thread wall-time stats
+    int    cond_interval    = 0;     // kept for CLI compat; unused in run loop
     std::string heatmap_out;         // path to dump final T grid CSV; empty = skip
 };
 
@@ -59,6 +60,7 @@ private:
     void stepThermalOMP();
     void stepGeometrySerial();
     void stepGeometryOMP();
+    void precomputeConductance();
 
     void dumpHeatmap(const std::string& path) const;
 };

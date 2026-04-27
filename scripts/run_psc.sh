@@ -29,6 +29,10 @@
 #   scp bridges2.psc.edu:~/15418-project/results/psc_benchmark.csv results/
 
 set -e
+
+export OMP_PROC_BIND=spread
+export OMP_PLACES=cores
+
 module load gcc/10.2.0 || true  # load GCC with OpenMP support
 
 # Locate project root: prefer $SLURM_SUBMIT_DIR, then $HOME/15418-project

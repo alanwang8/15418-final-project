@@ -3,24 +3,44 @@
 #include <cstdlib>
 #include <stdexcept>
 
-Mesh::Mesh(int rows, int cols, float cell_size)
-    : rows(rows), cols(cols), cell_size(cell_size),
-      cells(rows * cols), T_buf(rows * cols), neighbors(rows * cols)
+#ifdef _OPENMP
+#include <omp.h>
+#endif
+
+Mesh::Mesh(int rows, int cols, float cell_size, int nthreads)
+    : rows(rows), cols(cols), cell_size(cell_size)
 {
-    // Initialize geometry: flat grid, z=0
-    for (int r = 0; r < rows; r++) {
-        for (int c = 0; c < cols; c++) {
-            Cell& cell = at(r, c);
-            cell.x = (c + 0.5f) * cell_size;
-            cell.y = (r + 0.5f) * cell_size;
-            cell.z = 0.0f;
-            cell.base_size = cell_size;
-            cell.T = T_AMBIENT;
-            cell.is_boundary = (r == 0 || r == rows - 1 || c == 0 || c == cols - 1);
-        }
+    const int N = rows * cols;
+    cells.resize(N);
+    T_buf.resize(N);
+    T_flat.resize(N);
+    cond_.resize(N * 4);
+    neighbors.resize(N);
+
+    // NUMA-aware parallel first-touch: each thread writes its own pages
+#pragma omp parallel for schedule(static) num_threads(nthreads)
+    for (int i = 0; i < N; i++) {
+        int r = i / cols, c = i % cols;
+        Cell& cell = cells[i];
+        cell.x = (c + 0.5f) * cell_size;
+        cell.y = (r + 0.5f) * cell_size;
+        cell.z = 0.0f;
+        cell.base_size = cell_size;
+        cell.T = T_AMBIENT;
+        cell.c = 1.0f; cell.k = 1.0f; cell.p = 0.0f; cell.alpha = 0.0f;
+        cell.type = CACHE;
+        cell.is_boundary = (r == 0 || r == rows - 1 || c == 0 || c == cols - 1);
+        T_buf[i] = T_AMBIENT;
+        T_flat[i] = T_AMBIENT;
+        cond_[i*4+0] = cond_[i*4+1] = cond_[i*4+2] = cond_[i*4+3] = 0.0f;
     }
+
     buildNeighbors();
-    T_buf.assign(rows * cols, T_AMBIENT);
+
+    // Touch neighbors[] pages from correct NUMA nodes
+#pragma omp parallel for schedule(static) num_threads(nthreads)
+    for (int i = 0; i < N; i++)
+        neighbors[i].idx[0] = neighbors[i].idx[0];
 }
 
 void Mesh::buildNeighbors() {

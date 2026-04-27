@@ -29,10 +29,10 @@ if $QUICK; then
     SIZES=(100); PATTERNS=(uniform hotspot1); THREADS=(1 2 4 8); SCHEDULES=(static); STEPS=200
 elif $FULL; then
     SIZES=(100 500 1000); PATTERNS=(uniform hotspot1 hotspot4 random)
-    THREADS=(1 2 4 8 16); SCHEDULES=(static dynamic)
+    THREADS=(1 2 4 8); SCHEDULES=(static dynamic)
 else
     SIZES=(100 500); PATTERNS=(uniform hotspot1 hotspot4 random)
-    THREADS=(1 2 4 8 16); SCHEDULES=(static dynamic)
+    THREADS=(1 2 4 8); SCHEDULES=(static dynamic)
 fi
 
 mkdir -p results "$HEATMAP_DIR"
@@ -83,7 +83,7 @@ echo "=== Per-thread load balance (hotspot4, 500×500 if available) ==="
 for pattern in hotspot4 hotspot1; do
     size=500
     if [[ ! " ${SIZES[*]} " =~ " ${size} " ]]; then size=100; fi
-    for threads in 4 8 16; do
+    for threads in 4 8; do
         [[ ! " ${THREADS[*]} " =~ " ${threads} " ]] && continue
         for sched in static dynamic; do
             [[ ! " ${SCHEDULES[*]} " =~ " ${sched} " ]] && continue
@@ -105,7 +105,7 @@ if [ -f "$BINARY_PADDED" ]; then
     echo ""
     echo "=== False-sharing experiment: padded vs unpadded (500×500, static) ==="
     echo "  (columns padded=0 vs padded=1 in CSV)"
-    for threads in 1 4 8 16; do
+    for threads in 1 4 8; do
         [[ ! " ${THREADS[*]} " =~ " ${threads} " ]] && continue
         echo -n "  unpadded threads=${threads} ... "
         for trial in $(seq 1 $TRIALS); do

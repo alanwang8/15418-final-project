@@ -29,11 +29,16 @@ public:
     // Write buffer for double-buffering (next timestep temperatures)
     std::vector<float> T_buf;
 
-    // Precomputed neighbor lists (stable for structured grid;
-    // conductances are recomputed each step from 3D positions)
+    // SoA temperature array: dense floats for fast neighbor reads
+    std::vector<float> T_flat;
+
+    // Precomputed conductances: cond_[i*4+n] = min(ki,kj)/dist3D(i,j)
+    std::vector<float> cond_;
+
+    // Precomputed neighbor lists (stable for structured grid)
     std::vector<NeighborList> neighbors;
 
-    Mesh(int rows, int cols, float cell_size = 1.0f);
+    Mesh(int rows, int cols, float cell_size = 1.0f, int nthreads = 1);
 
     // Initialize cell material properties from a floorplan pattern.
     // Seeds the RNG with `seed` for reproducibility of RANDOM pattern.
