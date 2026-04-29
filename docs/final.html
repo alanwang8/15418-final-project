@@ -435,7 +435,7 @@ swap(cells.T, T_buf)                             // pointer swap after barrier</
                     <tr><td><strong>Memory bandwidth</strong></td><td>~23 GB/s (streaming probe, L3-resident; DDR4 DRAM ~35 GB/s peak)</td></tr>
                     <tr><td><strong>Mesh sizes</strong></td><td>100×100 and 500×500 cells</td></tr>
                     <tr><td><strong>Steps per run</strong></td><td>500 (timing averaged over 3 trials)</td></tr>
-                    <tr><td><strong>Thread counts</strong></td><td>1, 2, 4, 8, 16</td></tr>
+                    <tr><td><strong>Thread counts</strong></td><td>1, 2, 4, 8</td></tr>
                     <tr><td><strong>Patterns</strong></td><td>uniform, hotspot-1, hotspot-4, random</td></tr>
                     <tr><td><strong>Schedules</strong></td><td>static, dynamic (chunk=64 cells)</td></tr>
                   </tbody>
@@ -551,16 +551,11 @@ swap(cells.T, T_buf)                             // pointer swap after barrier</
 
                 <!-- Per-thread load balance -->
                 <h3 class="title is-5" style="margin-top:1.75rem">Per-Thread Load Balance</h3>
-                <div class="fr-figure-pair">
+                <div class="fr-figure" style="max-width:55%; margin: 1.75rem auto;">
                   <figure class="fr-figure">
                     <img src="assets/results/load_balance_hotspot4_500x500_8threads_static.png"
                          alt="Load balance 8T static" />
-                    <figcaption><strong>Fig. 7a</strong> — Per-thread time, 8T static, hotspot-4. All threads within 0.3% of average — near-perfect balance despite non-uniform temperatures.</figcaption>
-                  </figure>
-                  <figure class="fr-figure">
-                    <img src="assets/results/load_balance_hotspot4_500x500_16threads_static.png"
-                         alt="Load balance 16T static" />
-                    <figcaption><strong>Fig. 7b</strong> — Per-thread time, 16T static, hotspot-4. At 16T variance rises to ±2.5% — OS scheduling jitter from sharing 8 physical cores.</figcaption>
+                    <figcaption><strong>Fig. 7</strong> — Per-thread time, 8T static, hotspot-4. All threads within 0.3% of average — near-perfect balance despite non-uniform temperatures.</figcaption>
                   </figure>
                 </div>
                 <div class="callout callout-info">
@@ -568,11 +563,10 @@ swap(cells.T, T_buf)                             // pointer swap after barrier</
                   <ul style="margin-top:0.5rem">
                     <li><strong>4T, static:</strong> max deviation &lt;0.02% — essentially perfect</li>
                     <li><strong>8T, static:</strong> max deviation 0.28% — each thread's ~62 rows have uniform stencil cost</li>
-                    <li><strong>16T, static:</strong> max deviation 2.5% — OS scheduling jitter, not algorithmic imbalance</li>
                   </ul>
                   Near-perfect balance at 4–8T confirms the theoretical prediction: because every cell
                   executes the same 4-neighbor stencil, row-based static partitioning gives equal work
-                  per thread. Imbalance appears only when threads outnumber physical cores.
+                  per thread.
                 </div>
 
                 <!-- Time breakdown -->
